@@ -1,0 +1,17 @@
+{
+  "type": "java",
+  "name": "Run with args",
+  "request": "launch",
+  "mainClass": "${file}",
+  "args": ["123"],
+"console": "integratedTerminal",
+"configurations": [
+    {
+        "type": "java",
+        "name": "Fib",
+        "request": "launch",
+        "mainClass": "GCET/week1.Fib",
+        "projectName": "oops_java_dba49212"
+    }
+]
+}

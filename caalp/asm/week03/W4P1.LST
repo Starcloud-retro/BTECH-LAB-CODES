@@ -1,0 +1,55 @@
+Microsoft (R) Macro Assembler Version 5.00                  2/15/26 13:30:49
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE, DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  0005			   NUM DW 00005H 
+ 0002  ????			   FACT DW ? 
+ 0004				DATA ENDS 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R		      MOV AX,DATA 
+ 0003  8E D8			      MOV DS,AX 
+ 0005  8B 0E 0000 R		      MOV CX,NUM 
+ 0009  BA 0000			      MOV DX,0000H 
+ 000C  B8 0001			      MOV AX,0001H 
+ 000F  F7 E1			   NEXT: MUL CX 
+ 0011  49			         DEC CX 
+ 0012  83 F9 01			         CMP CX,0001H 
+ 0015  75 F8			         JNZ NEXT 
+				 
+ 0017  A3 0002 R		         MOV FACT,AX 
+ 001A  CD 21			         INT 21H 
+ 001C				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  2/15/26 13:30:49
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	001C	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0004	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+FACT . . . . . . . . . . . . . .  	L WORD	0002	DATA
+
+NEXT . . . . . . . . . . . . . .  	L NEAR	000F	CODE
+NUM  . . . . . . . . . . . . . .  	L WORD	0000	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  w4p1		
+
+
+     20 Source  Lines
+     20 Total   Lines
+      7 Symbols
+
+  51182 + 438722 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

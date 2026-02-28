@@ -1,0 +1,92 @@
+Microsoft (R) Macro Assembler Version 5.00                  2/15/26 13:41:29
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE, DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  45 4E 54 45 52 20 54	        NUM1 DB "ENTER THE NUMBER:$" 
+       48 45 20 4E 55 4D 42	
+       45 52 3A 24		
+ 0012  ??			        TEMP DB ? 
+ 0013  000A[			        FIBARR DB 10 DUP(0) 
+	   00			
+			 ]	
+				
+ 001D				DATA ENDS 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R		                MOV AX,DATA 
+ 0003  8E D8			                MOV DS,AX 
+ 0005  BE 0013 R		                MOV SI,OFFSET FIBARR 
+ 0008  8D 16 0000 R		                LEA DX,NUM1 
+ 000C  B4 09			                MOV AH,09H 
+ 000E  CD 21			                INT 21H 
+				 
+ 0010  B4 01			                MOV AH,01H 
+ 0012  CD 21			                INT 21H 
+				 
+ 0014  2C 30			                SUB AL,30H 
+ 0016  8A C8			                MOV CL,AL 
+				 
+ 0018  B0 00			                MOV AL,00 
+ 001A  88 04			                MOV [SI],AL 
+ 001C  04 30			                ADD AL,30H 
+ 001E  8A D0			                MOV DL,AL 
+ 0020  B4 02			                MOV AH,02H 
+ 0022  CD 21			                INT 21H 
+				 
+ 0024  B0 01			                MOV AL,01H 
+ 0026  88 44 01			                MOV [SI+1],AL 
+				 
+ 0029  04 30			                ADD AL,30H 
+ 002B  8A D0			                MOV DL,AL 
+ 002D  B4 02			                MOV AH,02H 
+ 002F  CD 21			                INT 21H 
+				 
+ 0031  8A 04			        LBL1:   MOV AL,[SI] 
+ 0033  02 44 01			        ADD AL,[SI+1] 
+ 0036  88 44 02			        MOV [SI+2],AL 
+ 0039  04 30			        ADD AL,30H 
+ 003B  8A D0			        MOV DL,AL 
+ 003D  B4 02			        MOV AH,02H 
+ 003F  CD 21			        INT 21H 
+ 0041  46			        INC SI 
+				 
+ 0042  E2 ED			        LOOP LBL1 
+ 0044  B4 4C			        MOV AH,4CH 
+ 0046  CD 21			        INT 21H 
+ 0048				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  2/15/26 13:41:29
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0048	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	001D	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+FIBARR . . . . . . . . . . . . .  	L BYTE	0013	DATA	Length = 000A
+
+LBL1 . . . . . . . . . . . . . .  	L NEAR	0031	CODE
+
+NUM1 . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+TEMP . . . . . . . . . . . . . .  	L BYTE	0012	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  w4p2		
+
+
+     49 Source  Lines
+     49 Total   Lines
+      8 Symbols
+
+  51028 + 438876 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

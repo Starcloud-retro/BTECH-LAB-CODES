@@ -1,0 +1,104 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "VowelCheck",
+      "request": "launch",
+      "mainClass": "GCET/practice.VowelCheck",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "TestInterface",
+      "request": "launch",
+      "mainClass": "GCET/practice.TestInterface",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "Prog1",
+      "request": "launch",
+      "mainClass": "GCET/practice.Prog1",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "MOverriding",
+      "request": "launch",
+      "mainClass": "GCET/practice.MOverriding",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "MOverriding",
+      "request": "launch",
+      "mainClass": "GCET.practice.MOverriding",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "TestInterface",
+      "request": "launch",
+      "mainClass": "GCET.practice.TestInterface",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "Test",
+      "request": "launch",
+      "mainClass": "GCET.temp.Test",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "Prac",
+      "request": "launch",
+      "mainClass": "GCET.practice.Prac",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "EvenOdd",
+      "request": "launch",
+      "mainClass": "GCET.practice.EvenOdd",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "ClassWork",
+      "request": "launch",
+      "mainClass": "GCET.practice.ClassWork",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "Variable",
+      "request": "launch",
+      "mainClass": "GCET.beginning.Basics.Variable",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "Student",
+      "request": "launch",
+      "mainClass": "GCET.week3.Student",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "PrimeNumbers",
+      "request": "launch",
+      "mainClass": "GCET.week1.PrimeNumbers",
+      "projectName": "src_fc627bbc"
+    },
+    {
+      "type": "java",
+      "name": "General Java Runner",
+      "request": "launch",
+      "mainClass": "${file}",
+      "args": "",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

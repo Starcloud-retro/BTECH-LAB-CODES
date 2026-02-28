@@ -1,0 +1,60 @@
+Microsoft (R) Macro Assembler Version 5.00                  1/30/26 16:29:32
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE, DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  43 4F 4D 50 55 54 45	        STR1 DB "COMPUTER SCIENCE AND ENGINEERI
+				NG$" ;SINGLE QUOTES ALSO SUPPORTED 
+       52 20 53 43 49 45 4E	
+       43 45 20 41 4E 44 20	
+       45 4E 47 49 4E 45 45	
+       52 49 4E 47 24		
+ 0021				DATA ENDS 
+				 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R		        MOV AX, DATA; READING THE ADDRESS OF DA
+				TA SEGMENT AND MOVING TO AX 
+ 0003  8E D8			        MOV DS, AX ; MOVING THE CONTENTS OF AX 
+				TO DS 
+				 
+ 0005  BA 0000 R		        MOV DX,OFFSET STR1 ; READING THE OFFSET
+				 ADDRESS OF STR1 
+				 
+ 0008  B4 09			        MOV AH, 09H ; DOS INT 21H SERVICE ; DIS
+				PLAY STRING 
+ 000A  CD 21			        INT 21H ; THE TWO INSTRCUTION TOGETHER 
+				CONSIDERED UNDER TSR 09 
+				                 
+ 000C  F4			        HLT     ; HALT 
+ 000D				CODE ENDS 
+				 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  1/30/26 16:29:32
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	000D	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0021	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+STR1 . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  w2p1		
+
+
+     18 Source  Lines
+     18 Total   Lines
+      5 Symbols
+
+  51146 + 438758 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

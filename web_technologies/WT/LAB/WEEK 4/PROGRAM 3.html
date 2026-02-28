@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>Countries</title>
+    <script type="text/javascript">
+        function showData(menu) { 
+            var country = menu.options[menu.selectedIndex].text; 
+            var capital = menu.options[menu.selectedIndex].value; 
+            
+            document.getElementById("tscou").innerHTML = "You selected: " + country; 
+            document.getElementById("tscap").innerHTML = "Its capital is: " + capital; 
+        } 
+    </script>
+</head>
+<body>
+    <center>
+        <h1 style="color:blue;">Select any Country, it will display the capital</h1>
+        <form>
+            <select name="Countries" onChange="showData(this);">
+                <option value="">--Select a country--</option>
+                <option value="New Delhi">India</option>
+                <option value="Moscow">Russia</option>
+                <option value="Tokyo">Japan</option>
+                <option value="Islamabad">Pakistan</option>
+                <option value="Washington DC">United States</option>
+            </select>
+            
+            <h2 style="color:red; font-family:'Lucida Handwriting'; font-size:150%;" id="tscou"></h2>
+            <h1 style="color:green; font-family:'Times New Roman'; font-size:200%;" id="tscap"></h1>
+        </form>
+    </center>
+</body>
+</html>

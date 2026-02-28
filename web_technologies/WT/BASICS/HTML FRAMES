@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HTML Frames Demonstration</title>
+</head>
+<frameset rows="20%, 60%" border="8">
+<!-- Top frame -->
+<frame src="header.html" name="top">
+<!-- Bottom frames divided into columns -->
+<frameset cols="30%, 70%">
+<frame src="menu.html" name="left">
+<frame src="content.html" name="right">
+</frameset>
+</frameset>
+</html> 
+<!-- header.html (top frame)
+<!DOCTYPE html>
+<html>
+<body bgcolor="lightgray">
+<h1 align="center">HTML Frames Example</h1>
+</body>
+</html>
+menu.html(left menu frame)
+<!DOCTYPE html>
+<html>
+<body bgcolor="lightyellow">
+<h3>Navigation Menu</h3>
+<a href="content.html" target="right">Home</a><br><br>
+<a href="about.html" target="right">About</a><br><br>
+<a href="contact.html" target="right">Contact</a>
+</body>
+</html>
+content.html (right content frame)
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Welcome</h2>
+<p>
+This page is displayed inside the right frame.
+</p>
+</body>
+</html>
+about.html (Additional pages loaded in frame)
+<!DOCTYPE html>
+<html>
+<body>
+<h2>About Page</h2>
+<p>This page is loaded using frame target.</p>
+</body>
+</html>
+contact.html (Additional pages loaded in frame)
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Contact Page</h2>
+<p>Email: example@email.com</p>
+</body>
+</html>  -->

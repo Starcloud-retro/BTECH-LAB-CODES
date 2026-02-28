@@ -1,0 +1,60 @@
+Microsoft (R) Macro Assembler Version 5.00                  2/10/26 21:42:29
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE,DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  0A			        COU DB 0AH 
+ 0001  000A[			        ARRNUM DB 0AH DUP(0) 
+	   00			
+			 ]	
+				
+ 000B				DATA ENDS 
+ 0000				CODE SEGMENT        
+ 0000  B8 ---- R		        MOV AX,DATA 
+ 0003  8E D8			        MOV DS,AX 
+ 0005  BE 0001 R		        MOV SI, OFFSET ARRNUM 
+ 0008  B0 00			        MOV AL,00H 
+ 000A  88 04			  BACK: MOV [SI],AL 
+ 000C  FE C9			        DEC CL 
+ 000E  74 05			        JZ GO 
+ 0010  FE C0			        INC AL 
+ 0012  46			        INC SI 
+ 0013  EB F5			        JMP BACK 
+ 0015  F4			  GO:HLT 
+ 0016				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  2/10/26 21:42:29
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0016	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	000B	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ARRNUM . . . . . . . . . . . . .  	L BYTE	0001	DATA	Length = 000A
+
+BACK . . . . . . . . . . . . . .  	L NEAR	000A	CODE
+
+COU  . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+GO . . . . . . . . . . . . . . .  	L NEAR	0015	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  w3p2		
+
+
+     19 Source  Lines
+     19 Total   Lines
+      8 Symbols
+
+  51142 + 438762 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

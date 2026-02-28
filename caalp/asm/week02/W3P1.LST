@@ -1,0 +1,74 @@
+Microsoft (R) Macro Assembler Version 5.00                  2/4/26 11:34:53
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE,DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  0036			   NUM DW 0036H;NUM IS VARIABLE STORING 2BYTE L
+				OCATION 
+ 0002  54 48 45 20 47 49 56	   STR1 DB "THE GIVEN NUMBER IS ODD NUMBER$";VA
+				RIABLE FOR PRINTING ODD CONDITION  
+       45 4E 20 4E 55 4D 42	
+       45 52 20 49 53 20 4F	
+       44 44 20 4E 55 4D 42	
+       45 52 24			
+ 0021  54 48 45 20 47 49 56	   STR2 DB "THE GIVEN NUMBER IS EVEN NUMBER$";V
+				ARIABLE FOR PRINTING EVEN STORING EACH WITH 8BI
+				T STORAGE 
+       45 4E 20 4E 55 4D 42	
+       45 52 20 49 53 20 45	
+       56 45 4E 20 4E 55 4D	
+       42 45 52 24		
+ 0041				DATA ENDS 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R		      MOV AX,DATA 
+ 0003  8E D8			      MOV DS,AX 
+ 0005  A1 0000 R		      MOV AX,NUM 
+ 0008  B3 02			      MOV BL,02H 
+ 000A  F6 F3			      DIV BL 
+ 000C  80 FC 00			      CMP AH,00H 
+ 000F  75 0B			      JNE GO 
+ 0011  8D 16 0021 R		      LEA DX,STR2 
+ 0015  B4 09			      MOV AH,09H 
+ 0017  CD 21			      INT 21H 
+ 0019  EB 09 90			      JMP NEXT 
+ 001C  8D 16 0002 R		   GO: LEA DX,STR1 
+ 0020  B4 09			       MOV AH,09H 
+ 0022  CD 21			       INT 21H 
+ 0024  F4			   NEXT: HLT 
+ 0025				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  2/4/26 11:34:53
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0025	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0041	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+GO . . . . . . . . . . . . . . .  	L NEAR	001C	CODE
+
+NEXT . . . . . . . . . . . . . .  	L NEAR	0024	CODE
+NUM  . . . . . . . . . . . . . .  	L WORD	0000	DATA
+
+STR1 . . . . . . . . . . . . . .  	L BYTE	0002	DATA
+STR2 . . . . . . . . . . . . . .  	L BYTE	0021	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  w3p1		
+
+
+     24 Source  Lines
+     24 Total   Lines
+      9 Symbols
+
+  51182 + 438722 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

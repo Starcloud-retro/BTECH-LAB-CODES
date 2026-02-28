@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE address [
+<!ELEMENT address (name,company,phone)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT company (#PCDATA)>
+<!ELEMENT phone (#PCDATA)>
+]>
+<address>
+<name>Tanmay Patil</name>
+<company>TutorialsPoint</company>
+<phone>(011) 123-4567</phone>
+</address>

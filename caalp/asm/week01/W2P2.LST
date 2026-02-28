@@ -1,0 +1,56 @@
+Microsoft (R) Macro Assembler Version 5.00                  2/1/26 16:26:46
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE, DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  43 4F 4D 50 55 54 45	        STR1 DB "COMPUTER SCIENCE AND ENGINEERI
+				NG",13,10,"GEETHANJALI",0DH,0AH,"AIML$" 
+       52 20 53 43 49 45 4E	
+       43 45 20 41 4E 44 20	
+       45 4E 47 49 4E 45 45	
+       52 49 4E 47 0D 0A 47	
+       45 45 54 48 41 4E 4A	
+       41 4C 49 0D 0A 41 49	
+       4D 4C 24			
+ 0034				DATA ENDS 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R		        MOV AX,DATA 
+ 0003  8E D8			        MOV DS,AX 
+ 0005  BA 0000 R		        MOV DX, OFFSET STR1 
+ 0008  B4 09			        MOV AH,09 
+ 000A  CD 21			        INT 21H 
+				 
+ 000C  B4 4C			        MOV AH,4CH 
+ 000E  CD 21			        INT 21H 
+				 
+ 0010				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  2/1/26 16:26:46
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0010	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0034	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+STR1 . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  w2p2		
+
+
+     16 Source  Lines
+     16 Total   Lines
+      5 Symbols
+
+  51144 + 438760 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

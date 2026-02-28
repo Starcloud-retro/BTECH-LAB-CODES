@@ -1,0 +1,16 @@
+<html>
+<head>
+    <script>
+        function validate()
+        {
+            alert("Form Submitted Successfully");
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="return validate()">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
