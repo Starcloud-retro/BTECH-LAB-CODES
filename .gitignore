@@ -1,0 +1,15 @@
+*.class
+*.o
+*.out
+*.exe
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+*.zip
+*.tar.gz
