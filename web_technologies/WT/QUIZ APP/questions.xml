@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<quiz>
+
+<question>
+<text>What does HTML stand for?</text>
+<option>Hyper Trainer Marking Language</option>
+<option>Hyper Text Markup Language</option>
+<option>High Text Machine Language</option>
+<option>Hyper Text Managing Language</option>
+<answer>1</answer>
+</question>
+
+<question>
+<text>Which language is used for styling web pages?</text>
+<option>HTML</option>
+<option>JQuery</option>
+<option>CSS</option>
+<option>XML</option>
+<answer>2</answer>
+</question>
+
+<question>
+<text>Which language runs inside the browser?</text>
+<option>Python</option>
+<option>Java</option>
+<option>JavaScript</option>
+<option>C++</option>
+<answer>2</answer>
+</question>
+
+</quiz>

@@ -1,0 +1,76 @@
+Microsoft (R) Macro Assembler Version 5.00                  3/11/26 21:04:55
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE, DS:DATA 
+				 
+ 0000				DATA SEGMENT 
+ 0000				DATA ENDS 
+				 
+ 0000				CODE SEGMENT 
+ 0000				START: 
+ 0000  B8 ---- R		        MOV AX,DATA 
+ 0003  8E D8			        MOV DS,AX 
+				 
+				        ;SWITCH TO MODE 13H 
+ 0005  B4 00			        MOV AH,00H ;BIOS FUNCTION:SET VIDEO MOD
+				E 
+ 0007  B0 13			        MOV AL,13H ;MODE 13H=320X320,256 COLOUR
+				S 
+ 0009  CD 10			        INT 10H ;CALL BIOS 
+				 
+				        ;POINT ES TO VIDEO MEMORY 
+ 000B  B8 A000			        MOV AX,0A000H 
+ 000E  8E C0			        MOV ES,AX 
+				 
+				        ;CALCULATE CENTER POSITION 
+				        ;CENTER = (160,100) 
+				        ;OFFSET = (100 X 320) + 160 = 32160 
+ 0010  BF 7DA0			        MOV DI,32160 ;DI=OFFSET FOR CENTER PIXE
+				L 
+				 
+				        ;DRAW RED PIXEL 
+ 0013  B0 04			        MOV AL,4 
+ 0015  26: 88 05		        MOV ES:[DI],AL 
+				 
+				        ;WAIT FOR KEYPRESS 
+ 0018  B4 00			        MOV AH,00H 
+ 001A  CD 16			        INT 16H ;CALL KEYBOARD INTERRUPT 
+				 
+				        ;RETURN TO TEXT MODE 
+ 001C  B4 00			        MOV AH,00H 
+ 001E  B0 03			        MOV AL,03H 
+ 0020  CD 10			        INT 10H 
+				 
+ 0022  F4			        HLT 
+				 
+ 0023				CODE ENDS 
+				END START 
+Microsoft (R) Macro Assembler Version 5.00                  3/11/26 21:04:55
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0023	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0000	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  PIXEL1		
+
+
+     41 Source  Lines
+     41 Total   Lines
+      5 Symbols
+
+  51018 + 438886 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
