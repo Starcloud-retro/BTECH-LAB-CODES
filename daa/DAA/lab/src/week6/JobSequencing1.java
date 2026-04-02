@@ -1,6 +1,3 @@
-package week6;
-
-
 
 import java.util.*;
 
@@ -66,7 +63,7 @@ public class JobSequencing1 {
             // Try to place job in latest available slot
             for (int j = Math.min(maxDeadline - 1, jobs[i].deadline - 1); j >= 0; j--) {
 
-                if (slot[j] == '\0') {   // check empty slot
+                if (slot[j] == '\0') { // check empty slot
                     slot[j] = jobs[i].id;
                     totalProfit += jobs[i].profit;
                     jobCount++;

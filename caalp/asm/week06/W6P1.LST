@@ -1,0 +1,90 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 21:03:43
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE,DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  02 03 05 08		LIST DB 2H,3H,5H,8H 
+ 0004  ??			E DB ? 
+ 0005  04			COUNT DB 4H 
+ 0006  0A 45 4E 54 45 52 20	M DB 10,"ENTER ELEMENT $" 
+       45 4C 45 4D 45 4E 54	
+       20 24			
+ 0016  0A 20 45 4C 45 4D 45	MSG DB 10," ELEMENT FOUND $" 
+       4E 54 20 46 4F 55 4E	
+       44 20 24			
+ 0027  0A 45 4C 45 4D 45 4E	MSG1 DB 10,"ELEMENT NOT FOUND $" 
+       54 20 4E 4F 54 20 46	
+       4F 55 4E 44 20 24	
+ 003B				DATA ENDS 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R		MOV AX,DATA 
+ 0003  8E D8			MOV DS,AX 
+ 0005  8D 16 0006 R		LEA DX,M 
+ 0009  B4 09			MOV AH,09H 
+ 000B  CD 21			INT 21H 
+ 000D  B4 01			MOV AH,01H 
+ 000F  CD 21			INT 21H 
+ 0011  2C 30			SUB AL,30H 
+ 0013  A2 0004 R		MOV E,AL 
+ 0016  BE 0000 R		MOV SI, OFFSET LIST 
+ 0019  8A 0E 0005 R		MOV CL,COUNT 
+ 001D  A0 0004 R		MOV AL,E 
+ 0020				FIRST: 
+ 0020  3A 04			CMP AL,[SI] 
+ 0022  74 0F			JE NEXT 
+ 0024  46			INC SI 
+ 0025  E2 F9			LOOP FIRST 
+ 0027  8D 16 0027 R		LEA DX,MSG1 
+ 002B  B4 09			MOV AH,09H 
+ 002D  CD 21			INT 21H 
+ 002F  B4 4C			MOV AH,4CH 
+ 0031  CD 21			INT 21H 
+ 0033				NEXT: 
+ 0033  8D 16 0016 R		LEA DX,MSG 
+ 0037  B4 09			MOV AH,09H 
+ 0039  CD 21			INT 21H 
+ 003B  B4 4C			MOV AH,4CH 
+ 003D  CD 21			INT 21H 
+ 003F				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 21:03:43
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	003F	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	003B	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COUNT  . . . . . . . . . . . . .  	L BYTE	0005	DATA
+
+E  . . . . . . . . . . . . . . .  	L BYTE	0004	DATA
+
+FIRST  . . . . . . . . . . . . .  	L NEAR	0020	CODE
+
+LIST . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+M  . . . . . . . . . . . . . . .  	L BYTE	0006	DATA
+MSG  . . . . . . . . . . . . . .  	L BYTE	0016	DATA
+MSG1 . . . . . . . . . . . . . .  	L BYTE	0027	DATA
+
+NEXT . . . . . . . . . . . . . .  	L NEAR	0033	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  W6P1		
+
+
+     40 Source  Lines
+     40 Total   Lines
+     12 Symbols
+
+  51178 + 465366 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

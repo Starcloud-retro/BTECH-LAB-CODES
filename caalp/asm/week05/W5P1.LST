@@ -1,0 +1,58 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 21:01:14
+                                                             Page     1-1
+
+
+				assume ds:data,es:extra,cs:code 
+ 0000				code segment 
+ 0000  B8 ---- R		        mov ax,data 
+ 0003  8E D8			        mov ds,ax 
+ 0005  B8 ---- R		        mov ax,extra 
+ 0008  8E C0			        mov es,ax 
+ 000A  BE 0000 R		        mov si,offset str1 
+ 000D  BF 0000 R		        mov di,offset str2 
+ 0010  B1 0B			        mov cl,0bh 
+ 0012  FC			        cld 
+ 0013  F3/ A4			        rep movsb 
+ 0015  F4			        hlt 
+ 0016				code ends 
+ 0000				data segment 
+ 0000  67 65 65 74 68 61 6E	        str1 db "geethanjali" 
+       6A 61 6C 69		
+ 000B				data ends 
+ 0000				extra segment 
+ 0000  000B[			        str2 db 0bh dup(0) 
+	   00			
+			 ]	
+				
+ 000B				extra ends 
+				end 
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 21:01:14
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0016	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	000B	PARA	NONE	
+EXTRA  . . . . . . . . . . . . .  	000B	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+STR1 . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+STR2 . . . . . . . . . . . . . .  	L BYTE	0000	EXTRA	Length = 000B
+
+@FILENAME  . . . . . . . . . . .  	TEXT  W5P1		
+
+
+     20 Source  Lines
+     20 Total   Lines
+      7 Symbols
+
+  51216 + 465328 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

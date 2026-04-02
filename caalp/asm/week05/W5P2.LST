@@ -1,0 +1,68 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 12:05:10
+                                                             Page     1-1
+
+
+				assume cs:code,ds:data,es:data 
+ 0000				data segment 
+ 0000  6D 70 6D 63 6C 61 62	str1 db "mpmclab$" 
+       24			
+ = 0008				count equ ($-str1) 
+ 0008  0008[			str2 db 8 dup(0) 
+	   00			
+			 ]	
+				
+ 0010				data ends 
+ 0000				code segment 
+ 0000  B8 ---- R		mov ax,data 
+ 0003  8E D8			mov ds,ax 
+ 0005  8E C0			mov es,ax 
+ 0007  B9 0007			mov cx,count-1 
+ 000A  8D 36 0000 R		lea si,str1 
+ 000E  8D 3E 0008 R		lea di,str2 
+ 0012  83 C6 06			add si,count-2 
+ 0015  FD			l1: std 
+ 0016  AC			lodsb 
+ 0017  FC			cld 
+ 0018  AA			stosb 
+ 0019  E2 FA			loop l1 
+ 001B  B0 24			mov al,24h 
+ 001D  AA			stosb 
+ 001E  B4 09			mov ah,09h 
+ 0020  8D 16 0008 R		lea dx,str2 
+ 0024  CD 21			int 21h 
+ 0026  CC			int 3h 
+ 0027				code ends 
+				End 
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 12:05:10
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0027	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0010	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COUNT  . . . . . . . . . . . . .  	NUMBER	0008	
+
+L1 . . . . . . . . . . . . . . .  	L NEAR	0015	CODE
+
+STR1 . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+STR2 . . . . . . . . . . . . . .  	L BYTE	0008	DATA	Length = 0008
+
+@FILENAME  . . . . . . . . . . .  	TEXT  W5P2		
+
+
+     27 Source  Lines
+     27 Total   Lines
+      8 Symbols
+
+  51140 + 465404 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

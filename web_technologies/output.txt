@@ -1,0 +1,178 @@
+.
+├── ./output.txt
+├── ./web_technologies.code-workspace
+├── ./WT
+│   ├── ./WT/BASICS
+│   │   ├── ./WT/BASICS/FORM VALIDATION
+│   │   ├── ./WT/BASICS/HTML FRAMES
+│   │   ├── ./WT/BASICS/HTML TABLES
+│   │   ├── ./WT/BASICS/JAVASCRIPT
+│   │   │   ├── ./WT/BASICS/JAVASCRIPT/COMMENTS.HTML
+│   │   │   ├── ./WT/BASICS/JAVASCRIPT/DATATYPES.HTML
+│   │   │   ├── ./WT/BASICS/JAVASCRIPT/FUNCTION --.2
+│   │   │   ├── ./WT/BASICS/JAVASCRIPT/FUNCTIONS.HTML
+│   │   │   ├── ./WT/BASICS/JAVASCRIPT/VARIABLE SCOPE.HTML
+│   │   │   └── ./WT/BASICS/JAVASCRIPT/VARIABLES.HTML
+│   │   ├── ./WT/BASICS/ONMOUSE EVENTS
+│   │   └── ./WT/BASICS/XML
+│   │       ├── ./WT/BASICS/XML/INTERNAL DTD.xml
+│   │       └── ./WT/BASICS/XML/XML DOCTYPE.xml
+│   ├── ./WT/LAB
+│   │   ├── ./WT/LAB/WEEK 2
+│   │   │   ├── ./WT/LAB/WEEK 2/BASIC TAGS.html
+│   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/ABOUT.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/COLLEGE.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/CONTACT.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/COURSES.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/FOOTER.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/HEADER.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CLG WEBSITE/HOME.html
+│   │   │   │   └── ./WT/LAB/WEEK 2/CLG WEBSITE/MENU.html
+│   │   │   ├── ./WT/LAB/WEEK 2/CSS
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CSS/EXTERNAL CSS.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CSS/INLINE CSS.html
+│   │   │   │   ├── ./WT/LAB/WEEK 2/CSS/INTERNAL CSS.html
+│   │   │   │   └── ./WT/LAB/WEEK 2/CSS/style.css
+│   │   │   ├── ./WT/LAB/WEEK 2/EDU TABLE.html
+│   │   │   ├── ./WT/LAB/WEEK 2/HYPERLINK
+│   │   │   │   ├── ./WT/LAB/WEEK 2/HYPERLINK/HYPERLINK2.html
+│   │   │   │   └── ./WT/LAB/WEEK 2/HYPERLINK/HYPERLINKS1.html
+│   │   │   ├── ./WT/LAB/WEEK 2/LISTS.html
+│   │   │   ├── ./WT/LAB/WEEK 2/LOGIN PAGE.html
+│   │   │   ├── ./WT/LAB/WEEK 2/REGISTRATION FORM.html
+│   │   │   ├── ./WT/LAB/WEEK 2/TABLES.html
+│   │   │   └── ./WT/LAB/WEEK 2/WEBSITE
+│   │   ├── ./WT/LAB/WEEK 3
+│   │   │   ├── ./WT/LAB/WEEK 3/js_1.html
+│   │   │   ├── ./WT/LAB/WEEK 3/js_2
+│   │   │   ├── ./WT/LAB/WEEK 3/js_3
+│   │   │   ├── ./WT/LAB/WEEK 3/js_4
+│   │   │   ├── ./WT/LAB/WEEK 3/js_5
+│   │   │   ├── ./WT/LAB/WEEK 3/js_6
+│   │   │   └── ./WT/LAB/WEEK 3/js_7
+│   │   ├── ./WT/LAB/WEEK 4
+│   │   │   ├── ./WT/LAB/WEEK 4/PROGRAM 1.html
+│   │   │   ├── ./WT/LAB/WEEK 4/PROGRAM 2.html
+│   │   │   └── ./WT/LAB/WEEK 4/PROGRAM 3.html
+│   │   ├── ./WT/LAB/WEEK5
+│   │   │   ├── ./WT/LAB/WEEK5/PROGRAM4
+│   │   │   │   ├── ./WT/LAB/WEEK5/PROGRAM4/bookstore.xml
+│   │   │   │   ├── ./WT/LAB/WEEK5/PROGRAM4/bookstore.xsd
+│   │   │   │   └── ./WT/LAB/WEEK5/PROGRAM4/Sample.dtd
+│   │   │   └── ./WT/LAB/WEEK5/PROGRAM5
+│   │   │       ├── ./WT/LAB/WEEK5/PROGRAM5/DParser.class
+│   │   │       ├── ./WT/LAB/WEEK5/PROGRAM5/DParser.java
+│   │   │       ├── ./WT/LAB/WEEK5/PROGRAM5/INPUT.xml
+│   │   │       └── ./WT/LAB/WEEK5/PROGRAM5/SaxParser.java
+│   │   └── ./WT/LAB/WEEK6
+│   │       ├── ./WT/LAB/WEEK6/ServletUserVali.java
+│   │       └── ./WT/LAB/WEEK6/Web.xml
+│   └── ./WT/QUIZ APP
+│       ├── ./WT/QUIZ APP/index.html
+│       ├── ./WT/QUIZ APP/questions.xml
+│       ├── ./WT/QUIZ APP/script.js
+│       └── ./WT/QUIZ APP/style.css
+└── ./WT_LAB
+    ├── ./WT_LAB/servlets
+    │   ├── ./WT_LAB/servlets/web
+    │   │   ├── ./WT_LAB/servlets/web/data
+    │   │   │   └── ./WT_LAB/servlets/web/data/students.xml
+    │   │   ├── ./WT_LAB/servlets/web/lib
+    │   │   ├── ./WT_LAB/servlets/web/out
+    │   │   │   └── ./WT_LAB/servlets/web/out/production
+    │   │   │       └── ./WT_LAB/servlets/web/out/production/web
+    │   │   ├── ./WT_LAB/servlets/web/src
+    │   │   │   └── ./WT_LAB/servlets/web/src/com
+    │   │   │       └── ./WT_LAB/servlets/web/src/com/wt
+    │   │   │           ├── ./WT_LAB/servlets/web/src/com/wt/week5
+    │   │   │           │   └── ./WT_LAB/servlets/web/src/com/wt/week5/XMLReader.java
+    │   │   │           ├── ./WT_LAB/servlets/web/src/com/wt/week6
+    │   │   │           │   └── ./WT_LAB/servlets/web/src/com/wt/week6/FirstServlet.java
+    │   │   │           └── ./WT_LAB/servlets/web/src/com/wt/week7
+    │   │   │               └── ./WT_LAB/servlets/web/src/com/wt/week7/JDBCExample.java
+    │   │   ├── ./WT_LAB/servlets/web/web
+    │   │   │   ├── ./WT_LAB/servlets/web/web/index.html
+    │   │   │   └── ./WT_LAB/servlets/web/web/WEB-INF
+    │   │   │       ├── ./WT_LAB/servlets/web/web/WEB-INF/classes
+    │   │   │       │   └── ./WT_LAB/servlets/web/web/WEB-INF/classes/com
+    │   │   │       │       └── ./WT_LAB/servlets/web/web/WEB-INF/classes/com/wt
+    │   │   │       │           ├── ./WT_LAB/servlets/web/web/WEB-INF/classes/com/wt/week5
+    │   │   │       │           │   └── ./WT_LAB/servlets/web/web/WEB-INF/classes/com/wt/week5/XMLReader.class
+    │   │   │       │           └── ./WT_LAB/servlets/web/web/WEB-INF/classes/com/wt/week7
+    │   │   │       │               └── ./WT_LAB/servlets/web/web/WEB-INF/classes/com/wt/week7/JDBCExample.class
+    │   │   │       └── ./WT_LAB/servlets/web/web/WEB-INF/web.xml
+    │   │   ├── ./WT_LAB/servlets/web/web.iml
+    │   │   └── ./WT_LAB/servlets/web/WEB-INF
+    │   │       └── ./WT_LAB/servlets/web/WEB-INF/classes
+    │   └── ./WT_LAB/servlets/wtlab_app
+    │       ├── ./WT_LAB/servlets/wtlab_app/src
+    │       │   └── ./WT_LAB/servlets/wtlab_app/src/com
+    │       │       └── ./WT_LAB/servlets/wtlab_app/src/com/wt
+    │       │           ├── ./WT_LAB/servlets/wtlab_app/src/com/wt/week6
+    │       │           └── ./WT_LAB/servlets/wtlab_app/src/com/wt/week7
+    │       ├── ./WT_LAB/servlets/wtlab_app/web
+    │       └── ./WT_LAB/servlets/wtlab_app/WEB-INF
+    │           └── ./WT_LAB/servlets/wtlab_app/WEB-INF/lib
+    ├── ./WT_LAB/week1
+    │   └── ./WT_LAB/week1/number_to_words.html
+    ├── ./WT_LAB/week10
+    │   ├── ./WT_LAB/week10/calculator
+    │   │   ├── ./WT_LAB/week10/calculator/calc.html
+    │   │   └── ./WT_LAB/week10/calculator/calc.php
+    │   └── ./WT_LAB/week10/login
+    │       ├── ./WT_LAB/week10/login/index.html
+    │       └── ./WT_LAB/week10/login/login.php
+    ├── ./WT_LAB/week11
+    │   └── ./WT_LAB/week11/validation.php
+    ├── ./WT_LAB/week12
+    │   └── ./WT_LAB/week12/login_validation.php
+    ├── ./WT_LAB/week2
+    │   └── ./WT_LAB/week2/text_analysis.html
+    ├── ./WT_LAB/week3
+    │   └── ./WT_LAB/week3/countries.html
+    ├── ./WT_LAB/week4
+    │   ├── ./WT_LAB/week4/bookstore.dtd
+    │   ├── ./WT_LAB/week4/bookstore.xml
+    │   └── ./WT_LAB/week4/bookstore.xsd
+    ├── ./WT_LAB/week5
+    │   ├── ./WT_LAB/week5/dom_parser
+    │   │   └── ./WT_LAB/week5/dom_parser/DParser.java
+    │   ├── ./WT_LAB/week5/sax_parser
+    │   │   └── ./WT_LAB/week5/sax_parser/SAXParserDemo.java
+    │   └── ./WT_LAB/week5/users.xml
+    ├── ./WT_LAB/week6
+    │   ├── ./WT_LAB/week6/db_version
+    │   │   ├── ./WT_LAB/week6/db_version/FirstServlet.java
+    │   │   ├── ./WT_LAB/week6/db_version/index.html
+    │   │   └── ./WT_LAB/week6/db_version/web.xml
+    │   └── ./WT_LAB/week6/xml_version
+    │       ├── ./WT_LAB/week6/xml_version/index.html
+    │       ├── ./WT_LAB/week6/xml_version/SecondServlet.java
+    │       └── ./WT_LAB/week6/xml_version/web.xml
+    ├── ./WT_LAB/week7
+    │   ├── ./WT_LAB/week7/calculator
+    │   │   ├── ./WT_LAB/week7/calculator/Calculator.java
+    │   │   ├── ./WT_LAB/week7/calculator/index.html
+    │   │   └── ./WT_LAB/week7/calculator/web.xml
+    │   └── ./WT_LAB/week7/cookies
+    │       ├── ./WT_LAB/week7/cookies/FirstServlet.java
+    │       ├── ./WT_LAB/week7/cookies/index.html
+    │       ├── ./WT_LAB/week7/cookies/SecondServlet.java
+    │       └── ./WT_LAB/week7/cookies/web.xml
+    ├── ./WT_LAB/week8
+    │   ├── ./WT_LAB/week8/calculator
+    │   │   ├── ./WT_LAB/week8/calculator/calc.html
+    │   │   └── ./WT_LAB/week8/calculator/calculator.jsp
+    │   └── ./WT_LAB/week8/login
+    │       ├── ./WT_LAB/week8/login/login.html
+    │       └── ./WT_LAB/week8/login/uservalid.jsp
+    └── ./WT_LAB/week9
+        ├── ./WT_LAB/week9/age_validation
+        │   ├── ./WT_LAB/week9/age_validation/age.html
+        │   └── ./WT_LAB/week9/age_validation/age.jsp
+        └── ./WT_LAB/week9/cookies
+            ├── ./WT_LAB/week9/cookies/cookie.html
+            └── ./WT_LAB/week9/cookies/listcookies.jsp
+
+73 directories, 103 files

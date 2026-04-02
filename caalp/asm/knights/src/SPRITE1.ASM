@@ -1,6 +1,5 @@
-; SPRITE1.ASM - Display 8x8 smiley sprite
+; SPRITE1.ASM - 8x8 smiley sprite
 ASSUME CS:CODE, DS:DATA
-
 DATA SEGMENT
     SMILEY DB 0,0,15,15,15,15,0,0
            DB 0,15,0,0,0,0,15,0
@@ -10,29 +9,23 @@ DATA SEGMENT
            DB 15,0,0,0,0,0,0,15
            DB 0,15,0,0,0,0,15,0
            DB 0,0,15,15,15,15,0,0
-
     SPRITE_X DW 156
     SPRITE_Y DW 96
 DATA ENDS
-
 CODE SEGMENT
 START:
     MOV AX, DATA
     MOV DS, AX
-
     MOV AH, 00H
     MOV AL, 13H
     INT 10H
-
     MOV AX, 0A000H
     MOV ES, AX
-
     MOV AX, [SPRITE_Y]
     MOV BX, 320
     MUL BX
     ADD AX, [SPRITE_X]
     MOV DI, AX
-
     LEA SI, SMILEY
     MOV BX, 8
 DRAW_SPRITE_ROW:
@@ -47,20 +40,16 @@ DRAW_SPRITE_COL:
 SKIP_PIXEL:
     INC DI
     LOOP DRAW_SPRITE_COL
-
     POP DI
     ADD DI, 320
     POP BX
     DEC BX
     JNZ DRAW_SPRITE_ROW
-
     MOV AH, 00H
     INT 16H
-
     MOV AH, 00H
     MOV AL, 03H
     INT 10H
-
     HLT
 CODE ENDS
 END START

@@ -1,40 +1,31 @@
-; PIXEL3.ASM - Calculate pixel position from X,Y
+; PIXEL3.ASM - Position calculator
 ASSUME CS:CODE, DS:DATA
-
 DATA SEGMENT
     X_POS DW 100
     Y_POS DW 75
     COLOR_VAL DB 14
 DATA ENDS
-
 CODE SEGMENT
 START:
     MOV AX, DATA
     MOV DS, AX
-
     MOV AH, 00H
     MOV AL, 13H
     INT 10H
-
     MOV AX, 0A000H
     MOV ES, AX
-
     MOV AX, [Y_POS]
     MOV BX, 320
     MUL BX
     ADD AX, [X_POS]
     MOV DI, AX
-
     MOV AL, [COLOR_VAL]
     MOV ES:[DI], AL
-
     MOV AH, 00H
     INT 16H
-
     MOV AH, 00H
     MOV AL, 03H
     INT 10H
-
     HLT
 CODE ENDS
 END START

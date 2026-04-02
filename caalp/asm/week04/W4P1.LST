@@ -1,0 +1,64 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 20:55:27
+                                                             Page     1-1
+
+
+				assume cs:code,ds:data 
+ 0000				data segment 
+ 0000  09			        cou db 09h 
+ 0001  45 6E 74 65 72 20 74	        str1 db "Enter the next number$" 
+       68 65 20 6E 65 78 74	
+       20 6E 75 6D 62 65 72	
+       24			
+ 0017  ??			        sum db ? 
+ 0018				data ends 
+ 0000				code segment 
+ 0000  B8 ---- R		        mov ax,data 
+ 0003  8E D8			        mov ds,ax 
+ 0005  8A 0E 0000 R		        mov cl,cou 
+ 0009  B3 00			        mov bl,0000h 
+ 000B  BA 0001 R		        go: mov dx,offset str1 
+ 000E  B4 09			        mov ah,09h 
+ 0010  CD 21			        int 21h 
+ 0012  B4 01			        mov ah,01h 
+ 0014  CD 21			        int 21h 
+ 0016  2C 30			        sub al,30h 
+ 0018  02 D8			        add bl,al 
+ 001A  FE C9			        dec cl 
+ 001C  75 ED			        jnz go 
+ 001E  88 1E 0017 R		        mov sum,bl 
+ 0022  F4			        hlt 
+ 0023				code ends 
+				end 
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 20:55:27
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0023	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0018	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COU  . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+GO . . . . . . . . . . . . . . .  	L NEAR	000B	CODE
+
+STR1 . . . . . . . . . . . . . .  	L BYTE	0001	DATA
+SUM  . . . . . . . . . . . . . .  	L BYTE	0017	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  W4P1		
+
+
+     24 Source  Lines
+     24 Total   Lines
+      8 Symbols
+
+  51216 + 465328 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

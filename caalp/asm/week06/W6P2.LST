@@ -1,0 +1,84 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 21:05:08
+                                                             Page     1-1
+
+
+				ASSUME CS:CODE, DS:DATA 
+ 0000				DATA SEGMENT 
+ 0000  09 06 07 08			 V DB 9,6,7,8 
+ 0004				DATA ENDS 
+ 0000				CODE SEGMENT 
+ 0000  B8 ---- R			 	 	 MOV AX,DATA 
+ 0003  8E D8				 	 	 MOV DS,AX 
+ 0005  B5 04				 	 	 MOV CH,4 
+ 0007  B0 00				 	 	 MOV AL,0 
+ 0009					 	 ITER: 
+ 0009  BB 0000				 	 	 MOV BX,0 
+ 000C					 	 NEXT: 
+ 000C  8A 87 0000 R			 	 	 MOV AL,V[BX] 
+ 0010  3A 87 0001 R			 	 	 CMP AL,V[BX+1] 
+ 0014  7D 02				 	 	 JNL SWAP 
+ 0016  7C 10				 	 	 JL CON 
+ 0018					 	 SWAP: 
+ 0018  8A 97 0000 R			 	 	 MOV DL,V[BX] 
+ 001C  8A 87 0001 R			 	 	 MOV AL,V[BX+1] 
+ 0020  88 97 0001 R			 	 	 MOV V[BX+1],DL 
+ 0024  88 87 0000 R			 	 	 MOV V[BX],AL 
+ 0028					 	 CON: 
+ 0028  43				 	 	 INC BX 
+ 0029  83 FB 03				 	 	 CMP BX,3 
+ 002C  75 DE				 	 	 JNZ NEXT 
+ 002E  FE CD				 	 	 DEC CH 
+ 0030  80 FD 00				 	 	 CMP CH,0 
+ 0033  75 D4				 	 	 JNZ ITER 
+ 0035  B1 04				 	 	 MOV CL,04H 
+ 0037  B3 00				 	 	 MOV BL,0H 
+ 0039					 	 DISP: 
+ 0039  8A 97 0000 R			 	 	 MOV DL,V[BX] 
+ 003D  80 C2 30				 	 	 ADD DL,30H 
+ 0040  43				 	 	 INC BX 
+ 0041  B4 02				 	 	 MOV AH,02H 
+ 0043  CD 21				 	 	 INT 21H 
+ 0045  E2 F2				 	 	 LOOP DISP 
+				 
+ 0047  B4 4C				 	 	 MOV AH,4CH 
+ 0049  CD 21				 	 	 INT 21H 
+ 004B				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 21:05:08
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	004B	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0004	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+CON  . . . . . . . . . . . . . .  	L NEAR	0028	CODE
+
+DISP . . . . . . . . . . . . . .  	L NEAR	0039	CODE
+
+ITER . . . . . . . . . . . . . .  	L NEAR	0009	CODE
+
+NEXT . . . . . . . . . . . . . .  	L NEAR	000C	CODE
+
+SWAP . . . . . . . . . . . . . .  	L NEAR	0018	CODE
+
+V  . . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  W6P2		
+
+
+     42 Source  Lines
+     42 Total   Lines
+     10 Symbols
+
+  51026 + 465518 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

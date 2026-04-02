@@ -1,6 +1,5 @@
-; KNIGHT1.ASM - Display 16x16 knight sprite
+; KNIGHT1.ASM - 16x16 knight sprite
 ASSUME CS:CODE, DS:DATA
-
 DATA SEGMENT
     KNIGHT DB 0,0,0,7,7,7,7,7,7,7,7,7,7,0,0,0
            DB 0,0,7,7,7,7,7,7,7,7,7,7,7,7,0,0
@@ -18,29 +17,23 @@ DATA SEGMENT
            DB 0,7,7,0,0,7,7,7,7,7,7,0,0,7,7,0
            DB 0,7,7,0,0,7,7,0,0,7,7,0,0,7,7,0
            DB 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-
     KNIGHT_X DW 152
     KNIGHT_Y DW 92
 DATA ENDS
-
 CODE SEGMENT
 START:
     MOV AX, DATA
     MOV DS, AX
-
     MOV AH, 00H
     MOV AL, 13H
     INT 10H
-
     MOV AX, 0A000H
     MOV ES, AX
-
     MOV AX, [KNIGHT_Y]
     MOV BX, 320
     MUL BX
     ADD AX, [KNIGHT_X]
     MOV DI, AX
-
     LEA SI, KNIGHT
     MOV BX, 16
 DRAW_KNIGHT_ROW:
@@ -55,20 +48,16 @@ DRAW_KNIGHT_COL:
 SKIP_TRANSPARENT:
     INC DI
     LOOP DRAW_KNIGHT_COL
-
     POP DI
     ADD DI, 320
     POP BX
     DEC BX
     JNZ DRAW_KNIGHT_ROW
-
     MOV AH, 00H
     INT 16H
-
     MOV AH, 00H
     MOV AL, 03H
     INT 10H
-
     HLT
 CODE ENDS
 END START

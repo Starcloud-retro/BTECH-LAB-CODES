@@ -1,0 +1,70 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 20:56:48
+                                                             Page     1-1
+
+
+				assume cs:code,ds:data 
+ 0000				data segment 
+ 0000  12 13 05 35 46 76	        arr db 12h,13h,05h,35h,46h,76h 
+ 0006  06			        cou db 06h 
+ 0007  ??			        max db ? 
+ 0008  ??			        min db ? 
+ 0009				data ends 
+ 0000				code segment 
+ 0000  B8 ---- R		        mov ax,data 
+ 0003  8E D8			        mov ds,ax 
+ 0005  BE 0000 R		        mov si,offset arr 
+ 0008  8A 0E 0006 R		        mov cl,cou 
+ 000C  8A 04			        mov al,[si] 
+ 000E  A2 0008 R		        mov min,al 
+ 0011  A2 0007 R		        mov max,al 
+ 0014  46			        back: inc si 
+ 0015  8A 04			        mov al,[si] 
+ 0017  38 06 0008 R		        cmp min,al 
+ 001B  7C 03			        jl chmax 
+ 001D  A2 0008 R		        mov min,al 
+ 0020  38 06 0007 R		        chmax: cmp max,al 
+ 0024  7F 03			        jg go 
+ 0026  A2 0007 R		        mov max,al 
+ 0029  FE C9			        go: dec cl 
+ 002B  75 E7			        jnz back 
+ 002D  F4			        hlt 
+ 002E				code ends 
+				end 
+Microsoft (R) Macro Assembler Version 5.00                  4/1/26 20:56:48
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	002E	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0009	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ARR  . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+BACK . . . . . . . . . . . . . .  	L NEAR	0014	CODE
+
+CHMAX  . . . . . . . . . . . . .  	L NEAR	0020	CODE
+COU  . . . . . . . . . . . . . .  	L BYTE	0006	DATA
+
+GO . . . . . . . . . . . . . . .  	L NEAR	0029	CODE
+
+MAX  . . . . . . . . . . . . . .  	L BYTE	0007	DATA
+MIN  . . . . . . . . . . . . . .  	L BYTE	0008	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  W4P2		
+
+
+     28 Source  Lines
+     28 Total   Lines
+     11 Symbols
+
+  51178 + 465366 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
