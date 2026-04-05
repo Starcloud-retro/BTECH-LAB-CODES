@@ -1,0 +1,48 @@
+; RECT1.ASM - Filled rectangle
+ASSUME CS:CODE, DS:DATA
+DATA SEGMENT
+    RECT_X DW 100
+    RECT_Y DW 50
+    RECT_W DW 40
+    RECT_H DW 30
+    RECT_C DB 1
+DATA ENDS
+CODE SEGMENT
+START:
+    MOV AX, DATA
+    MOV DS, AX
+    MOV AH, 00H
+    MOV AL, 13H
+    INT 10H
+    MOV AX, 0A000H
+    MOV ES, AX
+    MOV AX, [RECT_Y]
+    MOV BX, 320
+    MUL BX
+    ADD AX, [RECT_X]
+    MOV DI, AX
+    MOV BX, [RECT_H]
+DRAW_ROW:
+    PUSH BX
+    PUSH DI
+    MOV CX, [RECT_W]
+    MOV AL, [RECT_C]
+DRAW_COL:
+    MOV ES:[DI], AL
+    INC DI
+    LOOP DRAW_COL
+    POP DI
+    ADD DI, 320
+    POP BX
+    DEC BX
+    JNZ DRAW_ROW
+    MOV AH, 00H
+    INT 16H
+    MOV AH, 00H
+    MOV AL, 03H
+    INT 10H
+    
+    MOV AH, 4CH
+    INT 21H
+CODE ENDS
+END START

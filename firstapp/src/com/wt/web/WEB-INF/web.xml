@@ -1,0 +1,11 @@
+<web-app>
+    <servlet>
+        <servlet-name>Hello</servlet-name>
+        <servlet-class>com.wt.HelloServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Hello</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+</web-app>
