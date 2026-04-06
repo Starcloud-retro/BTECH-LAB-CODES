@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    /* Module & JSX settings */
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+
+    /* Target & libraries */
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    /* Emit & checks */
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,   // safer switch handling
+    "noImplicitAny": true,                // enforce explicit types
+    "noUnusedLocals": true,               // catch unused variables
+    "noUnusedParameters": true,           // catch unused params
+    "strict": true,                       // enable all strict type checks
+    "strictNullChecks": true,             // enforce null/undefined checks
+    "skipLibCheck": true,                 // faster builds, skip external lib checks
+
+    /* Paths & aliases */
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    /* Other options */
+    "types": ["vitest/globals"],
+    "useDefineForClassFields": true
+  },
+  "include": ["src"]
+}

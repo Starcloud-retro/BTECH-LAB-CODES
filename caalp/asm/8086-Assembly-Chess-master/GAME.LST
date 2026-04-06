@@ -1,0 +1,2586 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-1
+
+
+				.8086 
+				assume cs:code,ds:data 
+				 
+				include graphics.inc 
+ 0000                        C	data segment 
+			     C	 
+			     C	; White Pieces 
+			     C	 
+ 0000  77 50 61 77 6E 2E 62  C	whitePawn@graphics		db	'wPawn.
+				bmp',0 
+       6D 70 00              C	
+ 000A  77 4B 6E 69 67 68 74  C	whiteKnight@graphics	db	'wKnight.bmp',0
+				 
+       2E 62 6D 70 00        C	
+ 0016  77 42 69 73 68 6F 70  C	whiteBishop@graphics	db	'wBishop.bmp',0
+				 
+       2E 62 6D 70 00        C	
+ 0022  77 52 6F 6F 6B 2E 62  C	whiteRook@graphics		db	'wRook.
+				bmp',0 
+       6D 70 00              C	
+ 002C  77 51 75 65 65 6E 2E  C	whiteQueen@graphics		db	'wQueen
+				.bmp',0 
+       62 6D 70 00           C	
+ 0037  77 4B 69 6E 67 2E 62  C	whiteKing@graphics		db	'wKing.
+				bmp',0 
+       6D 70 00              C	
+			     C	 
+ 0041  0000                  C	whiteTable@graphics		dw	0 
+ 0043  0000 R                C						
+					dw  whitePawn@graphics 
+ 0045  000A R                C						
+					dw  whiteKnight@graphics 
+ 0047  0016 R                C						
+					dw  whiteBishop@graphics 
+ 0049  0022 R                C						
+					dw  whiteRook@graphics 
+ 004B  002C R                C						
+					dw  whiteQueen@graphics 
+ 004D  0037 R                C						
+					dw  whiteKing@graphics 
+			     C	 
+			     C	; Black Pieces 
+			     C	 
+ 004F  62 50 61 77 6E 2E 62  C	blackPawn@graphics		db	'bPawn.
+				bmp',0 
+       6D 70 00              C	
+ 0059  62 4B 6E 69 67 68 74  C	blackKnight@graphics	db	'bKnight.bmp',0
+				 
+       2E 62 6D 70 00        C	
+ 0065  62 42 69 73 68 6F 70  C	blackBishop@graphics	db	'bBishop.bmp',0
+				 
+       2E 62 6D 70 00        C	
+ 0071  62 52 6F 6F 6B 2E 62  C	blackRook@graphics		db	'bRook.
+				bmp',0 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-2
+
+
+       6D 70 00              C	
+ 007B  62 51 75 65 65 6E 2E  C	blackQueen@graphics		db	'bQueen
+				.bmp',0 
+       62 6D 70 00           C	
+ 0086  62 4B 69 6E 67 2E 62  C	blackKing@graphics		db	'bKing.
+				bmp',0 
+       6D 70 00              C	
+			     C	 
+ 0090  0000                  C	blackTable@graphics		dw	0 
+ 0092  004F R                C						
+					dw  blackPawn@graphics 
+ 0094  0059 R                C						
+					dw  blackKnight@graphics 
+ 0096  0065 R                C						
+					dw  blackBishop@graphics 
+ 0098  0071 R                C						
+					dw  blackRook@graphics 
+ 009A  007B R                C						
+					dw  blackQueen@graphics 
+ 009C  0086 R                C						
+					dw  blackKing@graphics 
+			     C	 
+			     C	 
+ 009E  001C[                 C	cubeColor@graphics	db 	28 dup(?), 31d,
+				 2 dup(?), 28d 
+	    ??               C	
+			 ]   C	
+       1F                    C	
+       0002[                 C	
+	    ??               C	
+			 ]   C	
+       1C                    C	
+ 00BE  004B                  C	cubeSize@graphics	dw	75d 
+			     C	 
+ 00C0  0003                  C	marginX@graphics	dw	3d 
+ 00C2  0001                  C	marginY@graphics	dw	1d 
+			     C	 
+ 00C4  1F                    C	whiteCube@graphics	db	31d 
+ 00C5  1C                    C	blackCube@graphics	db	28d 
+			     C	 
+ 00C6  33                    C	markColor@graphics	db	33h 
+			     C	 
+ 00C7                        C	data ends 
+			     C	 
+ 0000                        C	code segment 
+			     C	 
+ 0000                        C	initGraph@graphics PROC 
+ 0000  B8 4F02               C		mov ax, 4F02h 
+ 0003  BB 0105               C		mov bx, 105h ; 1024x768 
+ 0006  CD 10                 C		int 10h 
+			     C	 
+ 0008  C3                    C		ret 
+ 0009                        C	initGraph@graphics ENDP 
+			     C	 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-3
+
+
+			     C	 
+			     C	 
+ 0009                        C	drawBoard@graphics PROC 
+ 0009  B0 1F                 C		mov al, 31d 
+			     C	 
+ 000B  33 FF                 C		xor di, di 
+ 000D                        C		loopX@printBoard: 
+ 000D  BB 009E R             C			mov bx, offset cubeColor@graphi
+				cs 
+ 0010  02 D8                 C			add bl, al 
+ 0012  8A 07                 C			mov al, byte ptr [bx] 
+			     C	 
+ 0014  33 F6                 C			xor si, si 
+ 0016                        C			loopY@printBoard: 
+ 0016  BB 009E R             C				mov bx, offset cubeColo
+				r@graphics 
+ 0019  02 D8                 C				add bl, al 
+ 001B  8A 07                 C				mov al, byte ptr [bx] 
+			     C	 
+ 001D                        C				drawCube@printBoard: 
+ 001D  E8 002D R             C					call drawCube@g
+				raphics 
+			     C	 
+ 0020  46                    C					inc si 
+ 0021  83 FE 08              C					cmp si, 8 
+ 0024  75 F0                 C					jne loopY@print
+				Board 
+			     C	 
+ 0026  47                    C			inc di 
+ 0027  83 FF 08              C			cmp di, 8 
+ 002A  75 E1                 C			jne loopX@printBoard 
+			     C	 
+ 002C  C3                    C		ret 
+ 002D                        C	drawBoard@graphics ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 002D                        C	drawCube@graphics PROC 
+ 002D  56                    C		push si 
+ 002E  57                    C		push di 
+			     C	 
+ 002F  03 3E 00C0 R          C		add di, [marginX@graphics] 
+ 0033  03 36 00C2 R          C		add si, [marginY@graphics] 
+			     C	 
+ 0037  B4 0C                 C		mov ah, 0Ch 
+			     C	 
+ 0039  8B C8                 C		mov cx, ax 
+			     C	 
+ 003B  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 003F  8B C6                 C		mov ax, si 
+ 0041  F7 E2                 C		mul dx 
+ 0043  8B F0                 C		mov si, ax 
+			     C	 
+ 0045  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-4
+
+
+ 0049  8B C7                 C		mov ax, di 
+ 004B  F7 E2                 C		mul dx 
+ 004D  8B F8                 C		mov di, ax 
+			     C	 
+ 004F  8B C1                 C		mov ax, cx 
+			     C	 
+ 0051  8B 0E 00BE R          C		mov cx, [cubeSize@graphics] 
+ 0055                        C		loopX@drawCube: 
+			     C	 
+ 0055  8B 16 00BE R          C			mov dx, [cubeSize@graphics] 
+ 0059                        C			loopY@drawCube: 
+ 0059  03 D6                 C				add dx, si 
+ 005B  03 CF                 C				add cx, di 
+			     C	 
+ 005D  CD 10                 C				int 10h 
+			     C	 
+ 005F  2B D6                 C				sub dx, si 
+ 0061  2B CF                 C				sub cx, di 
+			     C	 
+ 0063  83 FA 00              C				cmp dx, 0 
+ 0066  4A                    C				dec dx 
+ 0067  75 F0                 C				jne loopY@drawCube 
+			     C	 
+ 0069  E2 EA                 C		loop loopX@drawCube 
+			     C	 
+ 006B  5F                    C		pop di 
+ 006C  5E                    C		pop si 
+			     C	 
+ 006D  C7 06 011A R 004C     C		mov [fileHeight@bmp], 76d 
+ 0073  C7 06 011C R 004C     C		mov [fileWidth@bmp], 76d 
+			     C	 
+ 0079  8B DE                 C		mov bx, si 
+ 007B  03 DB                 C		add bx, bx 
+ 007D  03 DB                 C		add bx, bx 
+ 007F  03 DB                 C		add bx, bx 
+			     C	 
+ 0081  03 DF                 C		add bx, di 
+ 0083  81 C3 00C7 R          C		add bx, offset board@engine 
+			     C	 
+ 0087  8A 27                 C		mov ah, byte ptr [bx] 
+ 0089  32 FF                 C		xor bh, bh 
+ 008B  80 FC 00              C		cmp ah, 0 
+ 008E  74 1D                 C		je exit@drawCube 
+ 0090  7C 0E                 C		jl whitePiece@drawCube 
+			     C	 
+ 0092                        C		blackPiece@drawCube: 
+ 0092  8A DC                 C			mov bl, ah 
+ 0094  D0 E3                 C			shl bl, 1 
+ 0096  8B 97 0090 R          C			mov dx, word ptr [blackTable@gr
+				aphics + bx] 
+ 009A  E8 04F3 R             C			call drawFile@bmp 
+ 009D  EB 0E 90              C			jmp exit@drawCube 
+			     C	 
+ 00A0                        C		whitePiece@drawCube: 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-5
+
+
+ 00A0  F6 DC                 C			neg ah 
+ 00A2  8A DC                 C			mov bl, ah 
+ 00A4  D0 E3                 C			shl bl, 1 
+ 00A6  8B 97 0041 R          C			mov dx, word ptr [whiteTable@gr
+				aphics + bx] 
+ 00AA  E8 04F3 R             C			call drawFile@bmp 
+			     C	 
+ 00AD                        C		exit@drawCube: 
+ 00AD  C3                    C			ret 
+ 00AE                        C	drawCube@graphics ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 00AE                        C	markCube@graphics PROC 
+ 00AE  56                    C		push si 
+ 00AF  57                    C		push di 
+			     C	 
+ 00B0  03 3E 00C0 R          C		add di, [marginX@graphics] 
+ 00B4  03 36 00C2 R          C		add si, [marginY@graphics] 
+			     C	 
+ 00B8  B4 0C                 C		mov ah, 0Ch 
+ 00BA  33 DB                 C		xor bx, bx 
+			     C	 
+ 00BC  50                    C		push ax 
+			     C	 
+ 00BD  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 00C1  8B C6                 C		mov ax, si 
+ 00C3  F7 E2                 C		mul dx 
+ 00C5  8B F0                 C		mov si, ax 
+			     C	 
+ 00C7  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 00CB  8B C7                 C		mov ax, di 
+ 00CD  F7 E2                 C		mul dx 
+ 00CF  8B F8                 C		mov di, ax 
+			     C	 
+ 00D1  58                    C		pop ax 
+			     C	 
+			     C		; Top Line 
+ 00D2  8B D6                 C		mov dx, si 
+ 00D4  8B 0E 00BE R          C		mov cx, [cubeSize@graphics] 
+ 00D8                        C		loop1@markCube: 
+ 00D8  03 CF                 C			add cx, di 
+ 00DA  CD 10                 C			int 10h 
+			     C	 
+ 00DC  42                    C			inc dx 
+ 00DD  CD 10                 C			int 10h 
+			     C	 
+ 00DF  42                    C			inc dx 
+ 00E0  CD 10                 C			int 10h 
+ 00E2  2B CF                 C			sub cx, di 
+ 00E4  4A                    C			dec dx 
+ 00E5  4A                    C			dec dx 
+			     C	 
+ 00E6  E2 F0                 C			loop loop1@markCube 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-6
+
+
+			     C	 
+			     C		; Bottom Line 
+ 00E8  8B D6                 C		mov dx, si 
+ 00EA  83 C2 4B              C		add dx, 75d 
+ 00ED  8B 0E 00BE R          C		mov cx, [cubeSize@graphics] 
+ 00F1                        C		loop2@markCube: 
+ 00F1  03 CF                 C			add cx, di 
+ 00F3  CD 10                 C			int 10h 
+			     C	 
+ 00F5  4A                    C			dec dx 
+ 00F6  CD 10                 C			int 10h 
+ 00F8  2B CF                 C			sub cx, di 
+ 00FA  42                    C			inc dx 
+			     C	 
+ 00FB  E2 F4                 C			loop loop2@markCube 
+			     C	 
+ 00FD  8B CF                 C		mov cx, di 
+ 00FF  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 0103                        C		loop3@markCube: 
+ 0103  03 D6                 C			add dx, si 
+ 0105  CD 10                 C			int 10h 
+			     C	 
+ 0107  41                    C			inc cx 
+ 0108  CD 10                 C			int 10h 
+			     C	 
+ 010A  2B D6                 C			sub dx, si	 
+ 010C  49                    C			dec cx 
+			     C	 
+ 010D  83 FA 00              C			cmp dx, 0 
+ 0110  4A                    C			dec dx 
+ 0111  75 F0                 C			jne loop3@markCube 
+			     C	 
+ 0113  8B CF                 C		mov cx, di 
+ 0115  83 C1 4B              C		add cx, 75d 
+ 0118  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 011C                        C		loop4@markCube: 
+ 011C  03 D6                 C			add dx, si 
+ 011E  CD 10                 C			int 10h 
+			     C	 
+ 0120  49                    C			dec cx 
+ 0121  CD 10                 C			int 10h 
+			     C	 
+ 0123  2B D6                 C			sub dx, si	 
+ 0125  41                    C			inc cx 
+			     C	 
+ 0126  83 FA 00              C			cmp dx, 0 
+ 0129  4A                    C			dec dx 
+ 012A  75 F0                 C			jne loop4@markCube 
+			     C	 
+ 012C  5F                    C		pop di 
+ 012D  5E                    C		pop si 
+			     C		 
+ 012E  C3                    C		ret 
+ 012F                        C	markCube@graphics ENDP 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-7
+
+
+			     C	 
+			     C	 
+			     C	 
+ 012F                        C	getColor@graphics PROC 
+ 012F  8B C6                 C			mov ax, si 
+ 0131  D1 E8                 C			shr ax, 1 
+			     C	 
+ 0133  72 1A                 C			jc oddRow@getColor 
+			     C	 
+ 0135                        C			evenRow@getColor: 
+ 0135  8B C6                 C				mov ax, si 
+ 0137  03 C0                 C				add ax, ax 
+ 0139  03 C0                 C				add ax, ax 
+ 013B  03 C0                 C				add ax, ax 
+ 013D  03 C7                 C				add ax, di 
+			     C	 
+ 013F  D1 E8                 C				shr ax, 1 
+ 0141  72 06                 C				jc blackCube@evenRow 
+			     C	 
+ 0143                        C				whiteCube@evenRow: 
+ 0143  A0 00C4 R             C					mov al, [whiteC
+				ube@graphics] 
+ 0146  EB 21 90              C					jmp exit@getCol
+				or 
+			     C	 
+ 0149                        C				blackCube@evenRow: 
+ 0149  A0 00C5 R             C					mov al, [blackC
+				ube@graphics] 
+ 014C  EB 1B 90              C					jmp exit@getCol
+				or 
+			     C	 
+ 014F                        C			oddRow@getColor: 
+ 014F  8B C6                 C				mov ax, si 
+ 0151  03 C0                 C				add ax, ax 
+ 0153  03 C0                 C				add ax, ax 
+ 0155  03 C0                 C				add ax, ax 
+ 0157  03 C7                 C				add ax, di 
+			     C	 
+ 0159  D1 E8                 C				shr ax, 1 
+ 015B  73 EC                 C				jnc blackCube@evenRow 
+			     C	 
+ 015D                        C				whiteCube@oddRow: 
+ 015D  A0 00C4 R             C					mov al, [whiteC
+				ube@graphics] 
+ 0160  EB 07 90              C					jmp exit@getCol
+				or 
+			     C	 
+ 0163                        C				blackCube@oddRow: 
+ 0163  A0 00C5 R             C					mov al, [blackC
+				ube@graphics] 
+ 0166  EB 01 90              C					jmp exit@getCol
+				or 
+			     C	 
+ 0169                        C			exit@getColor: 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-8
+
+
+ 0169  C3                    C				ret 
+ 016A                        C	getColor@graphics ENDP 
+			     C	 
+			     C	 
+ 016A                        C	cleanScreen@graphics PROC 
+ 016A  B4 0C                 C		mov ah, 0Ch 
+			     C	 
+ 016C  B9 0400               C		mov cx, 1024d 
+ 016F                        C		loopX@cleanBoard: 
+			     C	 
+ 016F  BA 0300               C			mov dx, 768d 
+ 0172                        C			loopY@cleanBoard: 
+ 0172  CD 10                 C				int 10h 
+			     C	 
+ 0174  83 FA 00              C				cmp dx, 0 
+ 0177  4A                    C				dec dx 
+ 0178  75 F8                 C				jne loopY@cleanBoard 
+			     C				 
+ 017A  E2 F3                 C		loop loopX@cleanBoard 
+			     C	 
+ 017C  C3                    C		ret 
+ 017D                        C	cleanScreen@graphics ENDP 
+			     C	 
+ 017D                        C	code ends 
+				 
+				include engine.inc 
+ 00C7                        C	data segment 
+			     C	 
+ 00C7  0040[                 C	board@engine		db	64 dup(0) 
+	   00                C	
+			 ]   C	
+			     C	
+ 0107  FF                    C	turn@engine			db	-1d 
+			     C	 
+ 0108  0000                  C	sourceAddr@engine	dw	0 
+ 010A  0000                  C	destAddr@engine		dw	0 
+			     C	 
+ 010C  04DB R                C	switchTable@engine	dw	invalidMove@val
+				idateMove 
+ 010E  0261 R                C		dw	pawn@moves 
+ 0110  02EC R                C		dw	knight@moves 
+ 0112  0329 R                C		dw	bishop@moves 
+ 0114  0386 R                C		dw	rook@moves 
+ 0116  03DB R                C		dw	queen@moves 
+ 0118  0488 R                C		dw	king@moves 
+			     C	 
+ 011A                        C	data ends 
+			     C	 
+ 017D                        C	code segment 
+			     C	 
+ 017D                        C	initBoard@engine PROC 
+ 017D  B9 0040               C		mov cx, 64 
+ 0180                        C		cleanBoard: 
+ 0180  8B C1                 C			mov ax, cx 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-9
+
+
+ 0182  48                    C			dec ax 
+			     C	 
+ 0183  BB 00C7 R             C			mov bx, offset board@engine 
+ 0186  03 D8                 C			add bx, ax 
+ 0188  C6 07 00              C			mov byte ptr [bx], 0 
+			     C	 
+ 018B  E2 F3                 C			loop cleanBoard 
+			     C	 
+ 018D  B9 0008               C		mov cx, 8 
+ 0190                        C		initPawns: 
+ 0190  8B C1                 C			mov ax, cx 
+ 0192  48                    C			dec ax 
+			     C	 
+ 0193  BB 00C7 R             C			mov bx, offset board@engine 
+ 0196  03 D8                 C			add bx, ax 
+			     C	 
+ 0198  83 C3 08              C			add bx, 8 
+ 019B  C6 07 01              C			mov byte ptr [bx], 1 
+			     C	 
+ 019E  83 C3 28              C			add bx, 40 
+ 01A1  C6 07 FF              C			mov byte ptr [bx], -1 
+			     C	 
+ 01A4  E2 EA                 C			loop initPawns 
+			     C	 
+ 01A6                        C		initRooks: 
+ 01A6  BB 00C7 R             C			mov bx, offset board@engine 
+			     C	 
+ 01A9  C6 07 04              C			mov byte ptr [bx], 4 
+ 01AC  C6 47 07 04           C			mov byte ptr [bx+7], 4 
+			     C	 
+ 01B0  83 C3 38              C			add bx, 56 
+			     C	 
+ 01B3  C6 07 FC              C			mov byte ptr [bx], -4 
+ 01B6  C6 47 07 FC           C			mov byte ptr [bx+7], -4 
+			     C	 
+ 01BA                        C		initKnights: 
+ 01BA  BB 00C7 R             C			mov bx, offset board@engine 
+			     C	 
+ 01BD  C6 47 01 02           C			mov byte ptr [bx+1], 2 
+ 01C1  C6 47 06 02           C			mov byte ptr [bx+6], 2 
+			     C	 
+ 01C5  83 C3 38              C			add bx, 56 
+			     C	 
+ 01C8  C6 47 01 FE           C			mov byte ptr [bx+1], -2 
+ 01CC  C6 47 06 FE           C			mov byte ptr [bx+6], -2 
+			     C	 
+ 01D0                        C		initBishops: 
+ 01D0  BB 00C7 R             C			mov bx, offset board@engine 
+			     C	 
+ 01D3  C6 47 02 03           C			mov byte ptr [bx+2], 3 
+ 01D7  C6 47 05 03           C			mov byte ptr [bx+5], 3 
+			     C	 
+ 01DB  83 C3 38              C			add bx, 56 
+			     C	 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-10
+
+
+ 01DE  C6 47 02 FD           C			mov byte ptr [bx+2], -3 
+ 01E2  C6 47 05 FD           C			mov byte ptr [bx+5], -3 
+			     C	 
+ 01E6                        C		initQueens: 
+ 01E6  BB 00C7 R             C			mov bx, offset board@engine 
+			     C	 
+ 01E9  C6 47 03 05           C			mov byte ptr [bx+3], 5 
+			     C	 
+ 01ED  83 C3 38              C			add bx, 56 
+			     C	 
+ 01F0  C6 47 03 FB           C			mov byte ptr [bx+3], -5 
+			     C	 
+ 01F4                        C		initKings: 
+ 01F4  BB 00C7 R             C			mov bx, offset board@engine 
+			     C	 
+ 01F7  C6 47 04 06           C			mov byte ptr [bx+4], 6 
+			     C	 
+ 01FB  83 C3 38              C			add bx, 56 
+			     C	 
+ 01FE  C6 47 04 FA           C			mov byte ptr [bx+4], -6 
+			     C	 
+			     C	 
+ 0202  C3                    C		ret 
+ 0203                        C	initBoard@engine ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 0203                        C	getOffset@engine PROC 
+ 0203  5A                    C		pop dx 
+			     C	 
+ 0204  8B C6                 C		mov ax, si 
+ 0206  03 C0                 C		add ax, ax 
+ 0208  03 C0                 C		add ax, ax 
+ 020A  03 C0                 C		add ax, ax 
+ 020C  03 C7                 C		add ax, di 
+			     C	 
+ 020E  5B                    C		pop bx 
+ 020F  03 D8                 C		add bx, ax 
+			     C	 
+ 0211  52                    C		push dx 
+ 0212  C3                    C		ret 
+ 0213                        C	getOffset@engine ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 0213                        C	validateSource@engine PROC 
+ 0213  80 3E 0107 R 01       C		cmp byte ptr [turn@engine], 1d 
+ 0218  74 08                 C		je blackMove@validateSource 
+			     C	 
+ 021A                        C		whiteMove@validateSource: 
+ 021A  80 3F 00              C			cmp byte ptr [bx], 0 
+ 021D  7D 0B                 C			jge invalidMove@validateSource 
+			     C	 
+ 021F  EB 0B 90              C			jmp validMove@validateSource 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-11
+
+
+			     C	 
+ 0222                        C		blackMove@validateSource: 
+ 0222  80 3F 00              C			cmp byte ptr [bx], 0 
+ 0225  7E 03                 C			jle invalidMove@validateSource 
+			     C	 
+ 0227  EB 03 90              C			jmp validMove@validateSource 
+			     C	 
+ 022A                        C		invalidMove@validateSource: 
+ 022A  F9                    C			stc 
+ 022B  C3                    C			ret 
+			     C	 
+ 022C                        C		validMove@validateSource: 
+ 022C  F8                    C			clc 
+ 022D  C3                    C			ret 
+ 022E                        C	validateSource@engine ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 022E                        C	validateDest@engine PROC 
+ 022E  80 3E 0107 R 01       C		cmp byte ptr [turn@engine], 1d 
+ 0233  74 08                 C		je blackMove@validateDest 
+			     C	 
+ 0235                        C		whiteMove@validateDest: 
+ 0235  80 3F 00              C			cmp byte ptr [bx], 0 
+ 0238  7C 0B                 C			jl invalidMove@validateDest 
+			     C	 
+ 023A  EB 0B 90              C			jmp validMove@validateDest 
+			     C	 
+ 023D                        C		blackMove@validateDest: 
+ 023D  80 3F 00              C			cmp byte ptr [bx], 0 
+ 0240  7F 03                 C			jg invalidMove@validateDest 
+			     C	 
+ 0242  EB 03 90              C			jmp validMove@validateDest 
+			     C	 
+ 0245                        C		invalidMove@validateDest: 
+ 0245  F9                    C			stc 
+ 0246  C3                    C			ret 
+			     C	 
+ 0247                        C		validMove@validateDest: 
+ 0247  F8                    C			clc 
+ 0248  C3                    C			ret 
+ 0249                        C	validateDest@engine ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 0249                        C	validateMove@engine PROC 
+ 0249  50                    C		push ax 
+ 024A  53                    C		push bx 
+ 024B  51                    C		push cx 
+ 024C  52                    C		push dx 
+ 024D  56                    C		push si 
+ 024E  57                    C		push di 
+			     C	 
+ 024F  32 E4                 C		xor ah, ah 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-12
+
+
+ 0251  8A 04                 C		mov al, byte ptr [si] 
+			     C	 
+ 0253  3C 00                 C		cmp al, 0 
+ 0255  7F 02                 C		jg switchMoves@validateMove 
+			     C	 
+ 0257  F6 D8                 C		neg al 
+			     C	 
+ 0259                        C		switchMoves@validateMove: 
+ 0259  D1 E0                 C			shl ax, 1 
+ 025B  8B D8                 C			mov bx, ax 
+			     C	 
+ 025D  FF A7 010C R          C			jmp word ptr [switchTable@engin
+				e + bx] 
+			     C	 
+			     C	 
+ 0261                        C		moves@validateMove: 
+ 0261                        C			pawn@moves: 
+ 0261  33 C9                 C				xor cx, cx 
+			     C	 
+ 0263  80 3C 00              C					cmp byte ptr [s
+				i], 0 
+ 0266  7F 42                 C				jg black@pawn 
+			     C	 
+ 0268                        C				white@pawn: 
+ 0268                        C					pawn1@white: 
+ 0268  8B DE                 C						mov bx,
+				 si 
+ 026A  83 EB 08              C						sub bx,
+				 8d 
+			     C	 
+ 026D  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0270  75 02                 C						jne paw
+				n2@white 
+			     C	 
+ 0272  53                    C						push bx
+				 
+ 0273  41                    C						inc cx 
+			     C	 
+ 0274                        C					pawn2@white: 
+ 0274  BB 00C7 R             C						mov bx,
+				 offset board@engine 
+ 0277  83 C3 30              C						add bx,
+				 48d 
+			     C	 
+ 027A  3B F3                 C						cmp si,
+				 bx 
+ 027C  72 11                 C						jb pawn
+				3@white 
+			     C	 
+ 027E  BB 00C7 R             C						mov bx,
+				 offset board@engine 
+ 0281  83 C3 37              C						add bx,
+				 55d 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-13
+
+
+			     C	 
+ 0284  3B F3                 C						cmp si,
+				 bx 
+ 0286  77 07                 C						ja pawn
+				3@white 
+			     C	 
+ 0288  8B DE                 C						mov bx,
+				 si 
+ 028A  83 EB 10              C						sub bx,
+				 16d 
+ 028D  53                    C						push bx
+				 
+ 028E  41                    C						inc cx 
+			     C	 
+ 028F                        C					pawn3@white: 
+ 028F  8B DE                 C						mov bx,
+				 si 
+ 0291  83 EB 07              C						sub bx,
+				 7d 
+			     C	 
+ 0294  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0297  74 02                 C						je pawn
+				4@white 
+			     C	 
+ 0299  53                    C						push bx
+				 
+ 029A  41                    C						inc cx 
+			     C	 
+ 029B                        C					pawn4@white: 
+ 029B  8B DE                 C						mov bx,
+				 si 
+ 029D  83 EB 09              C						sub bx,
+				 9d 
+			     C	 
+ 02A0  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 02A3  74 02                 C						je pawn
+				5@white 
+			     C	 
+ 02A5  53                    C						push bx
+				 
+ 02A6  41                    C						inc cx 
+			     C	 
+ 02A7                        C					pawn5@white: 
+ 02A7  E9 04C1 R             C						jmp isV
+				alid@validateMove 
+			     C	 
+ 02AA                        C				black@pawn: 
+ 02AA                        C					pawn1@black: 
+ 02AA  8B DE                 C						mov bx,
+				 si 
+ 02AC  83 C3 08              C						add bx,
+				 8d 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-14
+
+
+			     C	 
+ 02AF  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 02B2  75 02                 C						jne paw
+				n2@black 
+			     C	 
+ 02B4  53                    C						push bx
+				 
+ 02B5  41                    C						inc cx 
+			     C	 
+ 02B6                        C					pawn2@black: 
+ 02B6  BB 00C7 R             C						mov bx,
+				 offset board@engine 
+ 02B9  83 C3 08              C						add bx,
+				 8d 
+			     C	 
+ 02BC  3B F3                 C						cmp si,
+				 bx 
+ 02BE  72 11                 C						jb pawn
+				3@black 
+			     C	 
+ 02C0  BB 00C7 R             C						mov bx,
+				 offset board@engine 
+ 02C3  83 C3 0F              C						add bx,
+				 15d 
+			     C	 
+ 02C6  3B F3                 C						cmp si,
+				 bx 
+ 02C8  77 07                 C						ja pawn
+				3@black 
+			     C	 
+ 02CA  8B DE                 C						mov bx,
+				 si 
+ 02CC  83 C3 10              C						add bx,
+				 16d 
+			     C	 
+ 02CF  53                    C						push bx
+				 
+ 02D0  41                    C						inc cx 
+			     C	 
+ 02D1                        C					pawn3@black: 
+ 02D1  8B DE                 C						mov bx,
+				 si 
+ 02D3  83 C3 07              C						add bx,
+				 7d 
+			     C	 
+ 02D6  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 02D9  74 02                 C						je pawn
+				4@black 
+			     C	 
+ 02DB  53                    C						push bx
+				 
+ 02DC  41                    C						inc cx 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-15
+
+
+			     C	 
+ 02DD                        C					pawn4@black: 
+ 02DD  8B DE                 C						mov bx,
+				 si 
+ 02DF  83 C3 09              C						add bx,
+				 9d 
+			     C	 
+ 02E2  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 02E5  74 02                 C						je pawn
+				5@black 
+			     C	 
+ 02E7  53                    C						push bx
+				 
+ 02E8  41                    C						inc cx 
+			     C	 
+ 02E9                        C					pawn5@black: 
+ 02E9  E9 04C1 R             C						jmp isV
+				alid@validateMove 
+			     C	 
+ 02EC                        C			knight@moves: 
+ 02EC  33 C9                 C				xor cx, cx 
+			     C	 
+ 02EE                        C				knight1@knight: 
+ 02EE  8B DE                 C					mov bx, si 
+ 02F0  83 EB 11              C					sub bx, 17d 
+			     C	 
+ 02F3  53                    C					push bx 
+ 02F4  41                    C					inc cx 
+			     C	 
+ 02F5                        C				knight2@knight: 
+ 02F5  8B DE                 C					mov bx, si 
+ 02F7  83 EB 0F              C					sub bx, 15d 
+			     C	 
+ 02FA  53                    C					push bx 
+ 02FB  41                    C					inc cx 
+			     C	 
+ 02FC                        C				knight3@knight: 
+ 02FC  8B DE                 C					mov bx, si 
+ 02FE  83 C3 0F              C					add bx, 15d 
+			     C	 
+ 0301  53                    C					push bx 
+ 0302  41                    C					inc cx 
+			     C	 
+ 0303                        C				knight4@knight: 
+ 0303  8B DE                 C					mov bx, si 
+ 0305  83 C3 11              C					add bx, 17d 
+			     C	 
+ 0308  53                    C					push bx 
+ 0309  41                    C					inc cx 
+			     C	 
+ 030A                        C				knight5@knight: 
+ 030A  8B DE                 C					mov bx, si 
+ 030C  83 C3 06              C					add bx, 6d 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-16
+
+
+			     C	 
+ 030F  53                    C					push bx 
+ 0310  41                    C					inc cx 
+			     C	 
+ 0311                        C				knight6@knight: 
+ 0311  8B DE                 C					mov bx, si 
+ 0313  83 EB 0A              C					sub bx, 10d 
+			     C	 
+ 0316  53                    C					push bx 
+ 0317  41                    C					inc cx 
+			     C	 
+ 0318                        C				knight7@knight: 
+ 0318  8B DE                 C					mov bx, si 
+ 031A  83 C3 0A              C					add bx, 10d 
+			     C	 
+ 031D  53                    C					push bx 
+ 031E  41                    C					inc cx 
+			     C	 
+ 031F                        C				knight8@knight: 
+ 031F  8B DE                 C					mov bx, si 
+ 0321  83 EB 06              C					sub bx, 6d 
+			     C	 
+ 0324  53                    C					push bx 
+ 0325  41                    C					inc cx 
+			     C	 
+ 0326                        C				knight9@knight: 
+ 0326  E9 04C1 R             C					jmp isValid@val
+				idateMove 
+			     C	 
+ 0329                        C			bishop@moves: 
+ 0329  33 C9                 C				xor cx, cx 
+			     C	 
+ 032B                        C				bishop1@bishop: 
+ 032B  8B DE                 C					mov bx, si 
+ 032D  BA 0007               C					mov dx, 7d 
+ 0330                        C					loopMoves@bisho
+				p1: 
+ 0330  83 EB 08              C						sub bx,
+				 8d 
+ 0333  4B                    C						dec bx 
+			     C	 
+ 0334  53                    C						push bx
+				 
+ 0335  41                    C						inc cx 
+			     C	 
+ 0336  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0339  75 06                 C						jne bis
+				hop2@bishop 
+			     C	 
+ 033B  83 FA 00              C						cmp dx,
+				 0 
+ 033E  4A                    C						dec dx 
+ 033F  75 EF                 C						jne loo
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-17
+
+
+				pMoves@bishop1 
+			     C	 
+ 0341                        C				bishop2@bishop: 
+ 0341  8B DE                 C					mov bx, si 
+ 0343  BA 0007               C					mov dx, 7d 
+ 0346                        C					loopMoves@bisho
+				p2: 
+ 0346  83 EB 08              C						sub bx,
+				 8d 
+ 0349  43                    C						inc bx 
+			     C	 
+ 034A  53                    C						push bx
+				 
+ 034B  41                    C						inc cx 
+			     C	 
+ 034C  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 034F  75 06                 C						jne bis
+				hop3@bishop 
+			     C	 
+ 0351  83 FA 00              C						cmp dx,
+				 0 
+ 0354  4A                    C						dec dx 
+ 0355  75 EF                 C						jne loo
+				pMoves@bishop2 
+			     C	 
+ 0357                        C				bishop3@bishop: 
+ 0357  8B DE                 C					mov bx, si 
+ 0359  BA 0007               C					mov dx, 7d 
+ 035C                        C					loopMoves@bisho
+				p3: 
+ 035C  83 C3 08              C						add bx,
+				 8d 
+ 035F  4B                    C						dec bx 
+			     C	 
+ 0360  53                    C						push bx
+				 
+ 0361  41                    C						inc cx 
+			     C	 
+ 0362  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0365  75 06                 C						jne bis
+				hop4@bishop 
+			     C	 
+ 0367  83 FA 00              C						cmp dx,
+				 0 
+ 036A  4A                    C						dec dx 
+ 036B  75 EF                 C						jne loo
+				pMoves@bishop3 
+			     C	 
+ 036D                        C				bishop4@bishop: 
+ 036D  8B DE                 C					mov bx, si 
+ 036F  BA 0007               C					mov dx, 7d 
+ 0372                        C					loopMoves@bisho
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-18
+
+
+				p4: 
+ 0372  83 C3 08              C						add bx,
+				 8d 
+ 0375  43                    C						inc bx 
+			     C	 
+ 0376  53                    C						push bx
+				 
+ 0377  41                    C						inc cx 
+			     C	 
+ 0378  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 037B  75 06                 C						jne bis
+				hop5@bishop 
+			     C	 
+ 037D  83 FA 00              C						cmp dx,
+				 0 
+ 0380  4A                    C						dec dx 
+ 0381  75 EF                 C						jne loo
+				pMoves@bishop4 
+			     C	 
+ 0383                        C				bishop5@bishop: 
+ 0383  E9 04C1 R             C					jmp isValid@val
+				idateMove 
+			     C	 
+ 0386                        C			rook@moves: 
+ 0386  33 C9                 C				xor cx, cx 
+			     C	 
+ 0388                        C				rook1@rook: 
+ 0388  8B DE                 C					mov bx, si 
+ 038A  BA 0007               C					mov dx, 7d 
+ 038D                        C					loopMoves@rook1
+				: 
+ 038D  83 EB 08              C						sub bx,
+				 8d 
+			     C	 
+ 0390  53                    C						push bx
+				 
+ 0391  41                    C						inc cx 
+			     C	 
+ 0392  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0395  75 06                 C						jne roo
+				k2@rook 
+			     C	 
+ 0397  83 FA 00              C						cmp dx,
+				 0 
+ 039A  4A                    C						dec dx 
+ 039B  75 F0                 C						jne loo
+				pMoves@rook1 
+			     C	 
+ 039D                        C				rook2@rook: 
+ 039D  8B DE                 C					mov bx, si 
+ 039F  BA 0007               C					mov dx, 7d 
+ 03A2                        C					loopMoves@rook2
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-19
+
+
+				: 
+ 03A2  83 C3 08              C						add bx,
+				 8d 
+			     C	 
+ 03A5  53                    C						push bx
+				 
+ 03A6  41                    C						inc cx 
+			     C	 
+ 03A7  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 03AA  75 06                 C						jne roo
+				k3@rook 
+			     C	 
+ 03AC  83 FA 00              C						cmp dx,
+				 0 
+ 03AF  4A                    C						dec dx 
+ 03B0  75 F0                 C						jne loo
+				pMoves@rook2 
+			     C	 
+ 03B2                        C				rook3@rook: 
+ 03B2  8B DE                 C					mov bx, si 
+ 03B4  BA 0007               C					mov dx, 7d 
+ 03B7                        C					loopMoves@rook3
+				: 
+ 03B7  4B                    C						dec bx 
+			     C	 
+ 03B8  53                    C						push bx
+				 
+ 03B9  41                    C						inc cx 
+			     C	 
+ 03BA  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 03BD  75 06                 C						jne roo
+				k4@rook 
+			     C	 
+ 03BF  83 FA 00              C						cmp dx,
+				 0 
+ 03C2  4A                    C						dec dx 
+ 03C3  75 F2                 C						jne loo
+				pMoves@rook3 
+			     C	 
+ 03C5                        C				rook4@rook: 
+ 03C5  8B DE                 C					mov bx, si 
+ 03C7  BA 0007               C					mov dx, 7d 
+ 03CA                        C					loopMoves@rook4
+				: 
+ 03CA  43                    C						inc bx 
+			     C	 
+ 03CB  53                    C						push bx
+				 
+ 03CC  41                    C						inc cx 
+			     C	 
+ 03CD  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-20
+
+
+ 03D0  75 06                 C						jne roo
+				k5@rook 
+			     C	 
+ 03D2  83 FA 00              C						cmp dx,
+				 0 
+ 03D5  4A                    C						dec dx 
+ 03D6  75 F2                 C						jne loo
+				pMoves@rook4 
+			     C	 
+ 03D8                        C				rook5@rook: 
+ 03D8  E9 04C1 R             C					jmp isValid@val
+				idateMove 
+			     C	 
+ 03DB                        C			queen@moves: 
+ 03DB  33 C9                 C				xor cx, cx 
+			     C	 
+ 03DD                        C				queen1@queen: 
+ 03DD  8B DE                 C					mov bx, si 
+ 03DF  BA 0007               C					mov dx, 7d 
+ 03E2                        C					loopMoves@queen
+				1: 
+ 03E2  83 EB 08              C						sub bx,
+				 8d 
+ 03E5  4B                    C						dec bx 
+			     C	 
+ 03E6  53                    C						push bx
+				 
+ 03E7  41                    C						inc cx 
+			     C	 
+ 03E8  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 03EB  75 06                 C						jne que
+				en2@queen 
+			     C	 
+ 03ED  83 FA 00              C						cmp dx,
+				 0 
+ 03F0  4A                    C						dec dx 
+ 03F1  75 EF                 C						jne loo
+				pMoves@queen1 
+			     C	 
+ 03F3                        C				queen2@queen: 
+ 03F3  8B DE                 C					mov bx, si 
+ 03F5  BA 0007               C					mov dx, 7d 
+ 03F8                        C					loopMoves@queen
+				2: 
+ 03F8  83 EB 08              C						sub bx,
+				 8d 
+ 03FB  43                    C						inc bx 
+			     C	 
+ 03FC  53                    C						push bx
+				 
+ 03FD  41                    C						inc cx 
+			     C	 
+ 03FE  80 3F 00              C						cmp byt
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-21
+
+
+				e ptr [bx], 0 
+ 0401  75 06                 C						jne que
+				en3@queen 
+			     C	 
+ 0403  83 FA 00              C						cmp dx,
+				 0 
+ 0406  4A                    C						dec dx 
+ 0407  75 EF                 C						jne loo
+				pMoves@queen2 
+			     C	 
+ 0409                        C				queen3@queen: 
+ 0409  8B DE                 C					mov bx, si 
+ 040B  BA 0007               C					mov dx, 7d 
+ 040E                        C					loopMoves@queen
+				3: 
+ 040E  83 C3 08              C						add bx,
+				 8d 
+ 0411  4B                    C						dec bx 
+			     C	 
+ 0412  53                    C						push bx
+				 
+ 0413  41                    C						inc cx 
+			     C	 
+ 0414  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0417  75 06                 C						jne que
+				en4@queen 
+			     C	 
+ 0419  83 FA 00              C						cmp dx,
+				 0 
+ 041C  4A                    C						dec dx 
+ 041D  75 EF                 C						jne loo
+				pMoves@queen3 
+			     C	 
+ 041F                        C				queen4@queen: 
+ 041F  8B DE                 C					mov bx, si 
+ 0421  BA 0007               C					mov dx, 7d 
+ 0424                        C					loopMoves@queen
+				4: 
+ 0424  83 C3 08              C						add bx,
+				 8d 
+ 0427  43                    C						inc bx 
+			     C	 
+ 0428  53                    C						push bx
+				 
+ 0429  41                    C						inc cx 
+			     C	 
+ 042A  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 042D  75 06                 C						jne que
+				en5@queen 
+			     C	 
+ 042F  83 FA 00              C						cmp dx,
+				 0 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-22
+
+
+ 0432  4A                    C						dec dx 
+ 0433  75 EF                 C						jne loo
+				pMoves@queen4 
+			     C	 
+ 0435                        C				queen5@queen: 
+ 0435  8B DE                 C					mov bx, si 
+ 0437  BA 0007               C					mov dx, 7d 
+ 043A                        C					loopMoves@queen
+				5: 
+ 043A  83 EB 08              C						sub bx,
+				 8d 
+			     C	 
+ 043D  53                    C						push bx
+				 
+ 043E  41                    C						inc cx 
+			     C	 
+ 043F  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0442  75 06                 C						jne que
+				en6@queen 
+			     C	 
+ 0444  83 FA 00              C						cmp dx,
+				 0 
+ 0447  4A                    C						dec dx 
+ 0448  75 F0                 C						jne loo
+				pMoves@queen5 
+			     C	 
+ 044A                        C				queen6@queen: 
+ 044A  8B DE                 C					mov bx, si 
+ 044C  BA 0007               C					mov dx, 7d 
+ 044F                        C					loopMoves@queen
+				6: 
+ 044F  83 C3 08              C						add bx,
+				 8d 
+			     C	 
+ 0452  53                    C						push bx
+				 
+ 0453  41                    C						inc cx 
+			     C	 
+ 0454  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 0457  75 06                 C						jne que
+				en7@queen 
+			     C	 
+ 0459  83 FA 00              C						cmp dx,
+				 0 
+ 045C  4A                    C						dec dx 
+ 045D  75 F0                 C						jne loo
+				pMoves@queen6 
+			     C	 
+ 045F                        C				queen7@queen: 
+ 045F  8B DE                 C					mov bx, si 
+ 0461  BA 0007               C					mov dx, 7d 
+ 0464                        C					loopMoves@queen
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-23
+
+
+				7: 
+ 0464  4B                    C						dec bx 
+			     C	 
+ 0465  53                    C						push bx
+				 
+ 0466  41                    C						inc cx 
+			     C	 
+ 0467  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 046A  75 06                 C						jne que
+				en8@queen 
+			     C	 
+ 046C  83 FA 00              C						cmp dx,
+				 0 
+ 046F  4A                    C						dec dx 
+ 0470  75 F2                 C						jne loo
+				pMoves@queen7 
+			     C	 
+ 0472                        C				queen8@queen: 
+ 0472  8B DE                 C					mov bx, si 
+ 0474  BA 0007               C					mov dx, 7d 
+ 0477                        C					loopMoves@queen
+				8: 
+ 0477  43                    C						inc bx 
+			     C	 
+ 0478  53                    C						push bx
+				 
+ 0479  41                    C						inc cx 
+			     C	 
+ 047A  80 3F 00              C						cmp byt
+				e ptr [bx], 0 
+ 047D  75 06                 C						jne que
+				en9@queen 
+			     C	 
+ 047F  83 FA 00              C						cmp dx,
+				 0 
+ 0482  4A                    C						dec dx 
+ 0483  75 F2                 C						jne loo
+				pMoves@queen8 
+			     C	 
+ 0485                        C				queen9@queen: 
+ 0485  EB 3A 90              C					jmp isValid@val
+				idateMove 
+			     C	 
+ 0488                        C			king@moves: 
+ 0488  33 C9                 C				xor cx, cx 
+			     C	 
+ 048A                        C				king1@king: 
+ 048A  8B DE                 C					mov bx, si 
+ 048C  83 EB 08              C					sub bx, 8d 
+			     C	 
+ 048F  53                    C					push bx 
+ 0490  41                    C					inc cx 
+			     C	 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-24
+
+
+ 0491                        C				king2@king: 
+ 0491  8B DE                 C					mov bx, si 
+ 0493  83 C3 08              C					add bx, 8d 
+			     C	 
+ 0496  53                    C					push bx 
+ 0497  41                    C					inc cx 
+			     C	 
+ 0498                        C				king3@king: 
+ 0498  8B DE                 C					mov bx, si 
+ 049A  4B                    C					dec bx 
+			     C	 
+ 049B  53                    C					push bx 
+ 049C  41                    C					inc cx 
+			     C	 
+ 049D                        C				king4@king: 
+ 049D  8B DE                 C					mov bx, si 
+ 049F  43                    C					inc bx 
+			     C	 
+ 04A0  53                    C					push bx 
+ 04A1  41                    C					inc cx 
+			     C	 
+ 04A2                        C				king5@king: 
+ 04A2  8B DE                 C					mov bx, si 
+ 04A4  83 EB 09              C					sub bx, 9d 
+			     C	 
+ 04A7  53                    C					push bx 
+ 04A8  41                    C					inc cx 
+			     C	 
+ 04A9                        C				king6@king: 
+ 04A9  8B DE                 C					mov bx, si 
+ 04AB  83 EB 07              C					sub bx, 7d 
+			     C	 
+ 04AE  53                    C					push bx 
+ 04AF  41                    C					inc cx 
+			     C	 
+ 04B0                        C				king7@king: 
+ 04B0  8B DE                 C					mov bx, si 
+ 04B2  83 C3 07              C					add bx, 7d 
+			     C	 
+ 04B5  53                    C					push bx 
+ 04B6  41                    C					inc cx 
+			     C	 
+ 04B7                        C				king8@king: 
+ 04B7  8B DE                 C					mov bx, si 
+ 04B9  83 C3 09              C					add bx, 9d 
+			     C	 
+ 04BC  53                    C					push bx 
+ 04BD  41                    C					inc cx 
+			     C	 
+ 04BE                        C				king9@king: 
+ 04BE  EB 01 90              C					jmp isValid@val
+				idateMove 
+			     C	 
+			     C	 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-25
+
+
+			     C	 
+			     C	 
+ 04C1                        C		isValid@validateMove: 
+ 04C1  83 F9 00              C			cmp cx, 0 
+ 04C4  74 15                 C			je invalidMove@validateMove 
+			     C	 
+ 04C6                        C			loopMoves@isValid: 
+ 04C6  49                    C				dec cx 
+			     C	 
+ 04C7  5B                    C				pop bx 
+ 04C8  3B DF                 C				cmp bx, di 
+ 04CA  74 08                 C				je validMove@isValid 
+			     C	 
+ 04CC  83 F9 00              C				cmp cx, 0 
+ 04CF  75 F5                 C				jne loopMoves@isValid 
+			     C	 
+ 04D1  EB 08 90              C			jmp invalidMove@validateMove 
+			     C	 
+ 04D4                        C			validMove@isValid: 
+ 04D4  03 E1                 C				add sp, cx 
+ 04D6  03 E1                 C				add sp, cx 
+ 04D8  EB 09 90              C				jmp validMove@validateM
+				ove 
+			     C	 
+			     C	 
+ 04DB                        C		invalidMove@validateMove: 
+ 04DB  5F                    C			pop di 
+ 04DC  5E                    C			pop si 
+ 04DD  5A                    C			pop dx 
+ 04DE  59                    C			pop cx 
+ 04DF  5B                    C			pop bx 
+ 04E0  58                    C			pop ax 
+ 04E1  F9                    C			stc 
+ 04E2  C3                    C			ret 
+			     C	 
+ 04E3                        C		validMove@validateMove: 
+ 04E3  5F                    C			pop di 
+ 04E4  5E                    C			pop si 
+ 04E5  5A                    C			pop dx 
+ 04E6  59                    C			pop cx 
+ 04E7  5B                    C			pop bx 
+ 04E8  58                    C			pop ax 
+ 04E9  F8                    C			clc 
+ 04EA  C3                    C			ret 
+ 04EB                        C	validateMove@engine ENDP 
+			     C	 
+			     C	 
+ 04EB                        C	move@engine PROC 
+ 04EB  8A 24                 C		mov ah, byte ptr [si] 
+			     C	 
+ 04ED  88 25                 C		mov byte ptr [di], ah 
+ 04EF  C6 04 00              C		mov byte ptr [si], 0 
+			     C	 
+ 04F2  C3                    C		ret 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-26
+
+
+ 04F3                        C	move@engine ENDP 
+			     C	 
+ 04F3                        C	code ends 
+			     C	 
+				 
+				include bmp.inc 
+ 011A                        C	data segment 
+			     C	 
+ 011A  004C                  C	fileHeight@bmp		dw	76d 
+ 011C  004C                  C	fileWidth@bmp		dw	76d 
+			     C	 
+ 011E  0000                  C	cordX@bmp			dw	0 
+ 0120  0000                  C	cordY@bmp			dw	0 
+			     C	 
+ 0122  43 6F 75 6C 64 20 6E  C	errorMsg@bmp		db	'Could not open
+				 file, program terminated. ERROR.0$' 
+       6F 74 20 6F 70 65 6E  C	
+       20 66 69 6C 65 2C 20  C	
+       70 72 6F 67 72 61 6D  C	
+       20 74 65 72 6D 69 6E  C	
+       61 74 65 64 2E 20 45  C	
+       52 52 4F 52 2E 30 24  C	
+			     C	 
+ 0153  0000                  C	fileHandle@bmp		dw	0 
+			     C	 
+ 0155  0400[                 C	rowBuffer@bmp		db	1024 dup(0) 
+	   00                C	
+			 ]   C	
+			     C	
+ 0555  0036[                 C	headerBuffer@bmp	db	54 	dup(0) 
+	   00                C	
+			 ]   C	
+			     C	
+			     C	 
+ 058B                        C	data ends 
+			     C	 
+ 04F3                        C	code segment 
+			     C	 
+ 04F3                        C	drawFile@bmp PROC 
+ 04F3  50                    C		push ax 
+ 04F4  53                    C		push bx 
+ 04F5  51                    C		push cx 
+ 04F6  52                    C		push dx 
+ 04F7  56                    C		push si 
+ 04F8  57                    C		push di 
+			     C	 
+ 04F9  03 3E 00C0 R          C		add di, [marginX@graphics] 
+ 04FD  03 36 00C2 R          C		add si, [marginY@graphics] 
+			     C	 
+ 0501  56                    C		push si ; Row 
+ 0502  57                    C		push di ; Col 
+			     C	 
+ 0503  E8 0518 R             C		call getHandle@bmp 
+ 0506  E8 0541 R             C		call gotoData@bmp 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-27
+
+
+			     C	 
+ 0509  5F                    C		pop di 
+ 050A  5E                    C		pop si 
+			     C	 
+ 050B  E8 0565 R             C		call loadBitmap@bmp 
+ 050E  E8 0524 R             C		call closeFile@bmp 
+			     C	 
+ 0511  5F                    C		pop di 
+ 0512  5E                    C		pop si 
+ 0513  5A                    C		pop dx 
+ 0514  59                    C		pop cx 
+ 0515  5B                    C		pop bx 
+ 0516  58                    C		pop ax 
+			     C	 
+ 0517  C3                    C		ret 
+ 0518                        C	drawFile@bmp ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 0518                        C	getHandle@bmp PROC 
+ 0518  B8 3D00               C		mov ax, 3D00h 
+ 051B  CD 21                 C		int 21h 
+			     C	 
+ 051D  E8 05BD R             C		call isFileError@bmp 
+ 0520  A3 0153 R             C		mov [fileHandle@bmp], ax 
+			     C	 
+ 0523  C3                    C		ret 
+ 0524                        C	getHandle@bmp ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 0524                        C	closeFile@bmp PROC 
+ 0524  B4 3E                 C		mov ah, 3Eh 
+ 0526  8B 1E 0153 R          C		mov bx, [fileHandle@bmp] 
+			     C	 
+ 052A  E8 05BD R             C		call isFileError@bmp 
+			     C	 
+ 052D  CD 21                 C		int 21h 
+ 052F  C3                    C		ret 
+ 0530                        C	closeFile@bmp ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 0530                        C	gotoHeader@bmp PROC 
+ 0530  B8 4200               C		mov ax, 4200h 
+ 0533  8B 1E 0153 R          C		mov bx, [fileHandle@bmp] 
+ 0537  33 C9                 C		xor cx, cx 
+ 0539  33 D2                 C		xor dx, dx 
+			     C	 
+ 053B  CD 21                 C		int 21h 
+ 053D  E8 05BD R             C		call isFileError@bmp 
+			     C	 
+ 0540  C3                    C		ret 
+ 0541                        C	gotoHeader@bmp ENDP 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-28
+
+
+			     C	 
+			     C	 
+			     C	 
+ 0541                        C	gotoData@bmp PROC 
+ 0541  E8 0530 R             C		call gotoHeader@bmp 
+			     C	 
+ 0544  B8 3F00               C		mov ax, 3F00h 
+ 0547  B9 0036               C		mov cx, 54d 
+ 054A  BA 0555 R             C		mov dx, offset headerBuffer@bmp 
+ 054D  CD 21                 C		int 21h 
+ 054F  E8 05BD R             C		call isFileError@bmp 
+			     C	 
+ 0552  BB 0555 R             C		mov bx, offset headerBuffer@bmp 
+ 0555  8B 57 0A              C		mov dx, word ptr [bx+10d] 
+ 0558  8B 4F 0C              C		mov cx, word ptr [bx+12d] 
+			     C	 
+ 055B  B8 4200               C		mov ax, 4200h 
+ 055E  8B 1E 0153 R          C		mov bx, [fileHandle@bmp] 
+ 0562  CD 21                 C		int 21h 
+			     C	 
+ 0564  C3                    C		ret 
+ 0565                        C	gotoData@bmp ENDP 
+			     C	 
+			     C	 
+ 0565                        C	loadBitmap@bmp PROC	 
+ 0565  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 0569  8B C6                 C		mov ax, si 
+ 056B  F7 E2                 C		mul dx 
+ 056D  A3 0120 R             C		mov [cordY@bmp], ax 
+			     C	 
+ 0570  8B 16 00BE R          C		mov dx, [cubeSize@graphics] 
+ 0574  8B C7                 C		mov ax, di 
+ 0576  F7 E2                 C		mul dx 
+ 0578  A3 011E R             C		mov [cordX@bmp], ax 
+			     C	 
+ 057B  8B 36 011A R          C		mov si, [fileHeight@bmp] 
+ 057F                        C		loopY@loadBitmap: 
+ 057F  8B 1E 0153 R          C			mov bx, [fileHandle@bmp] 
+			     C	 
+ 0583  B4 3F                 C			mov ah, 3Fh 
+ 0585  8B 0E 011C R          C			mov cx, [fileWidth@bmp] 
+ 0589  BA 0155 R             C			mov dx, offset rowBuffer@bmp 
+ 058C  CD 21                 C			int 21h 
+			     C	 
+ 058E  8B 3E 011C R          C			mov di, [fileWidth@bmp] 
+ 0592  4F                    C			dec di 
+ 0593                        C			loopX@loadBitmap: 
+ 0593  BB 0155 R             C				mov bx, offset rowBuffe
+				r@bmp 
+ 0596  03 DF                 C				add bx, di 
+			     C	 
+ 0598  8A 07                 C				mov al, byte ptr [bx] 
+ 059A  3C FF                 C				cmp al, 0FFh 
+ 059C  74 12                 C				je alphaColor@loopX 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-29
+
+
+			     C	 
+ 059E  B4 0C                 C				mov ah, 0Ch 
+ 05A0  32 DB                 C				xor bl, bl 
+			     C	 
+ 05A2  8B CF                 C				mov cx, di 
+ 05A4  03 0E 011E R          C				add cx, [cordX@bmp] 
+			     C	 
+ 05A8  8B D6                 C				mov dx, si 
+ 05AA  03 16 0120 R          C				add dx, [cordY@bmp] 
+			     C	 
+ 05AE  CD 10                 C				int 10h 
+			     C	 
+ 05B0                        C				alphaColor@loopX: 
+ 05B0  83 FF 00              C					cmp di, 0 
+ 05B3  4F                    C					dec di 
+ 05B4  75 DD                 C					jne loopX@loadB
+				itmap 
+			     C	 
+ 05B6  83 FE 00              C			cmp si, 0 
+ 05B9  4E                    C			dec si 
+ 05BA  75 C3                 C			jne loopY@loadBitmap 
+			     C	 
+ 05BC  C3                    C		ret 
+ 05BD                        C	loadBitmap@bmp ENDP 
+			     C	 
+			     C	 
+			     C	 
+ 05BD                        C	isFileError@bmp PROC 
+ 05BD  72 01                 C		jc fileError@isFileError 
+ 05BF  C3                    C		ret 
+			     C		 
+ 05C0                        C		fileError@isFileError: 
+ 05C0  B4 09                 C			mov ah, 9h 
+ 05C2  BA 0122 R             C			mov dx, offset errorMsg@bmp 
+ 05C5  CD 21                 C			int 21h 
+			     C	 
+ 05C7  B4 02                 C			mov ah, 2h 
+ 05C9  8A D0                 C			mov dl, al 
+ 05CB  80 C2 30              C			add dl, 48d 
+ 05CE  CD 21                 C			int 21h 
+			     C	 
+ 05D0  B8 4C00               C			mov ax, 4c00h 
+ 05D3  CD 21                 C			int 21h 
+ 05D5                        C	isFileError@bmp ENDP 
+			     C	 
+ 05D5                        C	code ends 
+				 
+				include io.inc 
+ 058B                        C	data segment 
+			     C	 
+ 058B  00                    C	buffer@io                db      0 
+			     C	 
+			     C	; Marker 
+			     C	 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-30
+
+
+ 058C  0000                  C	markerCol@io             dw      0 
+ 058E  0000                  C	markerRow@io             dw      0 
+			     C	 
+ 0590  00                    C	mouseEnabled@io          db      0 
+ 0591  00                    C	mousePrevLeft@io         db      0 
+			     C	 
+ 0592  0000                  C	rawMouseX@io             dw      0 
+ 0594  0000                  C	rawMouseY@io             dw      0 
+			     C	 
+ 0596                        C	data ends 
+			     C	 
+ 05D5                        C	code segment 
+			     C	 
+ 05D5                        C	initMouse@io PROC 
+ 05D5  C6 06 0590 R 00       C	        mov byte ptr [mouseEnabled@io], 0 
+ 05DA  C6 06 0591 R 00       C	        mov byte ptr [mousePrevLeft@io], 0 
+			     C	 
+ 05DF  B8 0000               C	        mov ax, 0h 
+ 05E2  CD 33                 C	        int 33h 
+			     C	 
+ 05E4  3D 0000               C	        cmp ax, 0 
+ 05E7  74 0A                 C	        je exit@initMouse 
+			     C	 
+ 05E9  C6 06 0590 R 01       C	        mov byte ptr [mouseEnabled@io], 1 
+			     C	 
+			     C	        ; Ask mouse driver to show cursor (some
+				 VESA modes may still hide it). 
+ 05EE  B8 0001               C	        mov ax, 01h 
+ 05F1  CD 33                 C	        int 33h 
+			     C	 
+ 05F3                        C	exit@initMouse: 
+ 05F3  C3                    C	        ret 
+ 05F4                        C	initMouse@io ENDP 
+			     C	 
+			     C	 
+ 05F4                        C	mapMouseToSquare@io PROC 
+			     C	        ; Scale coordinates if driver reports d
+				oubled ranges in graphics mode. 
+ 05F4  A1 0592 R             C	        mov ax, [rawMouseX@io] 
+ 05F7  3D 0400               C	        cmp ax, 1024d 
+ 05FA  72 02                 C	        jb x@scaled 
+ 05FC  D1 E8                 C	        shr ax, 1 
+ 05FE                        C	x@scaled: 
+ 05FE  8B C8                 C	        mov cx, ax 
+			     C	 
+ 0600  A1 0594 R             C	        mov ax, [rawMouseY@io] 
+ 0603  3D 0300               C	        cmp ax, 768d 
+ 0606  72 02                 C	        jb y@scaled 
+ 0608  D1 E8                 C	        shr ax, 1 
+ 060A                        C	y@scaled: 
+ 060A  8B D0                 C	        mov dx, ax 
+			     C	 
+			     C	        ; minX = marginX * cubeSize 
+ 060C  A1 00C0 R             C	        mov ax, [marginX@graphics] 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-31
+
+
+ 060F  8B 1E 00BE R          C	        mov bx, [cubeSize@graphics] 
+ 0613  F7 E3                 C	        mul bx 
+ 0615  8B E8                 C	        mov bp, ax 
+			     C	 
+			     C	        ; maxX = minX + cubeSize * 8 
+ 0617  A1 00BE R             C	        mov ax, [cubeSize@graphics] 
+ 061A  03 C0                 C	        add ax, ax 
+ 061C  03 C0                 C	        add ax, ax 
+ 061E  03 C0                 C	        add ax, ax 
+ 0620  03 C5                 C	        add ax, bp 
+			     C	 
+ 0622  3B CD                 C	        cmp cx, bp 
+ 0624  72 4C                 C	        jb invalid@mapMouse 
+ 0626  3B C8                 C	        cmp cx, ax 
+ 0628  73 48                 C	        jae invalid@mapMouse 
+			     C	 
+			     C	        ; col = (x - minX) / cubeSize 
+ 062A  2B CD                 C	        sub cx, bp 
+ 062C  8B C1                 C	        mov ax, cx 
+ 062E  33 D2                 C	        xor dx, dx 
+ 0630  8B 1E 00BE R          C	        mov bx, [cubeSize@graphics] 
+ 0634  F7 F3                 C	        div bx 
+ 0636  8B F8                 C	        mov di, ax 
+			     C	 
+			     C	        ; minY = marginY * cubeSize 
+ 0638  A1 00C2 R             C	        mov ax, [marginY@graphics] 
+ 063B  8B 1E 00BE R          C	        mov bx, [cubeSize@graphics] 
+ 063F  F7 E3                 C	        mul bx 
+ 0641  8B E8                 C	        mov bp, ax 
+			     C	 
+			     C	        ; maxY = minY + cubeSize * 8 
+ 0643  A1 00BE R             C	        mov ax, [cubeSize@graphics] 
+ 0646  03 C0                 C	        add ax, ax 
+ 0648  03 C0                 C	        add ax, ax 
+ 064A  03 C0                 C	        add ax, ax 
+ 064C  03 C5                 C	        add ax, bp 
+			     C	 
+ 064E  8B 0E 0594 R          C	        mov cx, [rawMouseY@io] 
+ 0652  81 F9 0300            C	        cmp cx, 768d 
+ 0656  72 02                 C	        jb y2@scaled 
+ 0658  D1 E9                 C	        shr cx, 1 
+ 065A                        C	y2@scaled: 
+			     C	 
+ 065A  3B CD                 C	        cmp cx, bp 
+ 065C  72 14                 C	        jb invalid@mapMouse 
+ 065E  3B C8                 C	        cmp cx, ax 
+ 0660  73 10                 C	        jae invalid@mapMouse 
+			     C	 
+			     C	        ; row = (y - minY) / cubeSize 
+ 0662  2B CD                 C	        sub cx, bp 
+ 0664  8B C1                 C	        mov ax, cx 
+ 0666  33 D2                 C	        xor dx, dx 
+ 0668  8B 1E 00BE R          C	        mov bx, [cubeSize@graphics] 
+ 066C  F7 F3                 C	        div bx 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-32
+
+
+ 066E  8B F0                 C	        mov si, ax 
+			     C	 
+ 0670  F8                    C	        clc 
+ 0671  C3                    C	        ret 
+			     C	 
+ 0672                        C	invalid@mapMouse: 
+ 0672  F9                    C	        stc 
+ 0673  C3                    C	        ret 
+ 0674                        C	mapMouseToSquare@io ENDP 
+			     C	 
+			     C	 
+ 0674                        C	updateMarker@io PROC 
+			     C	        ; input: SI=row, DI=col 
+ 0674  3B 36 058E R          C	        cmp si, [markerRow@io] 
+ 0678  75 07                 C	        jne redraw@updateMarker 
+ 067A  3B 3E 058C R          C	        cmp di, [markerCol@io] 
+ 067E  75 01                 C	        jne redraw@updateMarker 
+ 0680  C3                    C	        ret 
+			     C	 
+ 0681                        C	redraw@updateMarker: 
+ 0681  56                    C	        push si 
+ 0682  57                    C	        push di 
+			     C	 
+ 0683  8B 36 058E R          C	        mov si, [markerRow@io] 
+ 0687  8B 3E 058C R          C	        mov di, [markerCol@io] 
+ 068B  E8 012F R             C	        call getColor@graphics 
+ 068E  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 0691  5F                    C	        pop di 
+ 0692  5E                    C	        pop si 
+			     C	 
+ 0693  A0 00C6 R             C	        mov al, [markColor@graphics] 
+ 0696  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 0699  89 3E 058C R          C	        mov [markerCol@io], di 
+ 069D  89 36 058E R          C	        mov [markerRow@io], si 
+ 06A1  C3                    C	        ret 
+ 06A2                        C	updateMarker@io ENDP 
+			     C	 
+			     C	 
+ 06A2                        C	getData@io PROC 
+ 06A2                        C	poll@getData: 
+ 06A2  B4 01                 C	        mov ah, 01h 
+ 06A4  CD 16                 C	        int 16h 
+ 06A6  75 3D                 C	        jnz key@getData 
+			     C	 
+ 06A8  80 3E 0590 R 00       C	        cmp byte ptr [mouseEnabled@io], 0 
+ 06AD  74 F3                 C	        je poll@getData 
+			     C	 
+ 06AF  B8 0003               C	        mov ax, 03h 
+ 06B2  CD 33                 C	        int 33h 
+			     C	 
+ 06B4  89 0E 0592 R          C	        mov [rawMouseX@io], cx 
+ 06B8  89 16 0594 R          C	        mov [rawMouseY@io], dx 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-33
+
+
+			     C	 
+ 06BC  E8 05F4 R             C	        call mapMouseToSquare@io 
+ 06BF  72 03                 C	        jc noHover@getData 
+			     C	 
+ 06C1  E8 0674 R             C	        call updateMarker@io 
+			     C	 
+ 06C4                        C	noHover@getData: 
+ 06C4  F6 C3 01              C	        test bl, 1 
+ 06C7  74 15                 C	        jz released@getData 
+			     C	 
+ 06C9  80 3E 0591 R 00       C	        cmp byte ptr [mousePrevLeft@io], 0 
+ 06CE  75 D2                 C	        jne poll@getData 
+			     C	 
+ 06D0  C6 06 0591 R 01       C	        mov byte ptr [mousePrevLeft@io], 1 
+			     C	 
+			     C	        ; Return marker location as selection. 
+ 06D5  8B 36 058E R          C	        mov si, [markerRow@io] 
+ 06D9  8B 3E 058C R          C	        mov di, [markerCol@io] 
+ 06DD  C3                    C	        ret 
+			     C	 
+ 06DE                        C	released@getData: 
+ 06DE  C6 06 0591 R 00       C	        mov byte ptr [mousePrevLeft@io], 0 
+ 06E3  EB BD                 C	        jmp poll@getData 
+			     C	 
+ 06E5                        C	key@getData: 
+ 06E5  C6 06 0591 R 00       C	        mov byte ptr [mousePrevLeft@io], 0 
+			     C	 
+ 06EA  B4 00                 C	        mov ah, 0h 
+ 06EC  CD 16                 C	        int 16h 
+			     C	 
+ 06EE  80 FC 20              C	        cmp ah, 20h 
+ 06F1  77 0B                 C	        ja undefinedKey@getData 
+			     C	 
+ 06F3  32 FF                 C	        xor bh, bh 
+ 06F5  8A DC                 C	        mov bl, ah 
+ 06F7  D1 E3                 C	        shl bx, 1 
+			     C	 
+ 06F9  2E: FF A7 07D8 R      C	        jmp word ptr cs:[binds@io + bx] 
+			     C	 
+ 06FE                        C	undefinedKey@getData: 
+ 06FE  EB A2                 C	        jmp poll@getData 
+			     C	 
+ 0700                        C	getData@io ENDP 
+			     C	 
+			     C	 
+ 0700                        C	userAction PROC 
+ 0700                        C	quit@userAction: 
+ 0700  BA 0596 R             C	        mov dx, offset byUser@error 
+ 0703  E9 08E8 R             C	        jmp exit_msg 
+			     C	 
+ 0706                        C	submit@userAction: 
+ 0706  C3                    C	        ret 
+			     C	 
+ 0707                        C	markerUp@userAction: 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-34
+
+
+ 0707  8B 36 058E R          C	        mov si, [markerRow@io] 
+ 070B  8B 3E 058C R          C	        mov di, [markerCol@io] 
+			     C	 
+ 070F  83 FE 00              C	        cmp si, 0d 
+ 0712  74 15                 C	        je exit@markerUp 
+			     C	 
+ 0714                        C	decRow@markerUp: 
+ 0714  E8 012F R             C	        call getColor@graphics 
+ 0717  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 071A  4E                    C	        dec si 
+ 071B  A0 00C6 R             C	        mov al, [markColor@graphics] 
+ 071E  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 0721  89 3E 058C R          C	        mov [markerCol@io], di 
+ 0725  89 36 058E R          C	        mov [markerRow@io], si 
+			     C	 
+ 0729                        C	exit@markerUp: 
+ 0729  E9 06A2 R             C	        jmp getData@io 
+			     C	 
+ 072C                        C	markerDown@userAction: 
+ 072C  8B 36 058E R          C	        mov si, [markerRow@io] 
+ 0730  8B 3E 058C R          C	        mov di, [markerCol@io] 
+			     C	 
+ 0734  83 FE 07              C	        cmp si, 7d 
+ 0737  74 15                 C	        je exit@markerDown 
+			     C	 
+ 0739                        C	incRow@markerDown: 
+ 0739  E8 012F R             C	        call getColor@graphics 
+ 073C  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 073F  46                    C	        inc si 
+ 0740  A0 00C6 R             C	        mov al, [markColor@graphics] 
+ 0743  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 0746  89 3E 058C R          C	        mov [markerCol@io], di 
+ 074A  89 36 058E R          C	        mov [markerRow@io], si 
+			     C	 
+ 074E                        C	exit@markerDown: 
+ 074E  E9 06A2 R             C	        jmp getData@io 
+			     C	 
+ 0751                        C	markerRight@userAction: 
+ 0751  8B 36 058E R          C	        mov si, [markerRow@io] 
+ 0755  8B 3E 058C R          C	        mov di, [markerCol@io] 
+			     C	 
+ 0759  83 FF 07              C	        cmp di, 7d 
+ 075C  74 14                 C	        je incRow@markerRight 
+			     C	 
+ 075E                        C	incCol@markerRight: 
+ 075E  E8 012F R             C	        call getColor@graphics 
+ 0761  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 0764  47                    C	        inc di 
+ 0765  A0 00C6 R             C	        mov al, [markColor@graphics] 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-35
+
+
+ 0768  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 076B  89 3E 058C R          C	        mov [markerCol@io], di 
+ 076F  EB 20 90              C	        jmp exit@markerRight 
+			     C	 
+ 0772                        C	incRow@markerRight: 
+ 0772  83 FE 07              C	        cmp si, 7d 
+ 0775  74 1A                 C	        je exit@markerRight 
+			     C	 
+ 0777  E8 012F R             C	        call getColor@graphics 
+ 077A  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 077D  46                    C	        inc si 
+ 077E  33 FF                 C	        xor di, di 
+ 0780  A0 00C6 R             C	        mov al, [markColor@graphics] 
+ 0783  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 0786  89 3E 058C R          C	        mov [markerCol@io], di 
+ 078A  89 36 058E R          C	        mov [markerRow@io], si 
+ 078E  EB 01 90              C	        jmp exit@markerRight 
+			     C	 
+ 0791                        C	exit@markerRight: 
+ 0791  E9 06A2 R             C	        jmp getData@io 
+			     C	 
+ 0794                        C	markerLeft@userAction: 
+ 0794  8B 36 058E R          C	        mov si, [markerRow@io] 
+ 0798  8B 3E 058C R          C	        mov di, [markerCol@io] 
+			     C	 
+ 079C  83 FF 00              C	        cmp di, 0d 
+ 079F  74 14                 C	        je decRow@markerLeft 
+			     C	 
+ 07A1                        C	decCol@markerLeft: 
+ 07A1  E8 012F R             C	        call getColor@graphics 
+ 07A4  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 07A7  4F                    C	        dec di 
+ 07A8  A0 00C6 R             C	        mov al, [markColor@graphics] 
+ 07AB  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 07AE  89 3E 058C R          C	        mov [markerCol@io], di 
+ 07B2  EB 21 90              C	        jmp exit@markerLeft 
+			     C	 
+ 07B5                        C	decRow@markerLeft: 
+ 07B5  83 FE 00              C	        cmp si, 0d 
+ 07B8  74 1B                 C	        je exit@markerLeft 
+			     C	 
+ 07BA  E8 012F R             C	        call getColor@graphics 
+ 07BD  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+ 07C0  4E                    C	        dec si 
+ 07C1  BF 0007               C	        mov di, 7d 
+ 07C4  A0 00C6 R             C	        mov al, [markColor@graphics] 
+ 07C7  E8 00AE R             C	        call markCube@graphics 
+			     C	 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-36
+
+
+ 07CA  89 3E 058C R          C	        mov [markerCol@io], di 
+ 07CE  89 36 058E R          C	        mov [markerRow@io], si 
+ 07D2  EB 01 90              C	        jmp exit@markerLeft 
+			     C	 
+ 07D5                        C	exit@markerLeft: 
+ 07D5  E9 06A2 R             C	        jmp getData@io 
+			     C	 
+ 07D8                        C	userAction ENDP 
+			     C	 
+ 07D8                        C	binds@io: 
+ 07D8  06FE R                C	        dw offset undefinedKey@getData         
+				 ; UNDEFINED 
+ 07DA  0700 R                C	        dw offset quit@userAction              
+				 ; Esc[1d] 
+ 07DC  000F[                 C	        dw 15d dup(offset undefinedKey@getData)
+				 ; UNDEFINED 
+	   06FE R            C	
+			 ]   C	
+			     C	
+ 07FA  0707 R                C	        dw offset markerUp@userAction          
+				 ; W[17d] 
+ 07FC  000A[                 C	        dw 10d dup(offset undefinedKey@getData)
+				 ; UNDEFINED 
+	   06FE R            C	
+			 ]   C	
+			     C	
+ 0810  0706 R                C	        dw offset submit@userAction            
+				 ; Enter[28d] 
+ 0812  06FE R                C	        dw offset undefinedKey@getData         
+				 ; UNDEFINED 
+ 0814  0794 R                C	        dw offset markerLeft@userAction        
+				 ; A[30d] 
+ 0816  072C R                C	        dw offset markerDown@userAction        
+				 ; S[31d] 
+ 0818  0751 R                C	        dw offset markerRight@userAction       
+				 ; D[32d] 
+			     C	 
+ 081A                        C	code ends 
+				 
+				 
+ 0596				data segment 
+				 
+				; Error Messages 
+				 
+ 0596  50 72 6F 67 72 61 6D	byUser@error	db	'Program closed by user
+				.$' 
+       20 63 6C 6F 73 65 64	
+       20 62 79 20 75 73 65	
+       72 2E 24			
+ 05AE  57 6F 6F 70 73 21 20	blank@error		db	'Woops! nothing
+				 here.$' 
+       6E 6F 74 68 69 6E 67	
+       20 68 65 72 65 2E 24	
+				 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-37
+
+
+				; Directories 
+				 
+ 05C3  2E 2E 2F 00		root@wd			db	'../', 0 
+ 05C7  61 73 73 65 74 73 00	pieces@wd		db	'assets', 0 
+				 
+				; Selection 
+				 
+ 05CE  00000000			sourcePos@sel	dd	0 
+ 05D2  00000000			destPos@sel		dd	0 
+ 05D6  0000			step@sel		dw	0 
+				 
+				; Win Messages 
+				 
+ 05D8  47 61 6D 65 20 65 6E	white@win		db 'Game ended. White w
+				on!$' 
+       64 65 64 2E 20 57 68	
+       69 74 65 20 77 6F 6E	
+       21 24			
+ 05EF  47 61 6D 65 20 65 6E	black@win		db 'Game ended. Black w
+				on!$' 
+       64 65 64 2E 20 42 6C	
+       61 63 6B 20 77 6F 6E	
+       21 24			
+				 
+ 0606				data ends 
+				 
+ 081A				code segment 
+				 
+ 081A				START: 
+ 081A  B8 ---- R			mov ax, data 
+ 081D  8E D8				mov ds, ax 
+				 
+ 081F  B4 3B				mov ah, 3Bh ; Set Working Dir 
+ 0821  BA 05C7 R			mov dx, offset pieces@wd 
+ 0824  CD 21				int 21h 
+				 
+ 0826  E8 017D R			call initBoard@engine 
+ 0829  E8 0000 R			call initGraph@graphics 
+ 082C  E8 05D5 R			call initMouse@io 
+				 
+ 082F  B0 14				mov al, 14h 
+ 0831  E8 016A R			call cleanScreen@graphics 
+ 0834  E8 0009 R			call drawBoard@graphics 
+				 
+ 0837  BF 0007				mov di, 7 
+ 083A  BE 0007				mov si, 7 
+ 083D  A0 00C6 R			mov al, [markColor@graphics] 
+ 0840  E8 00AE R			call markCube@graphics 
+				 
+ 0843  89 3E 058C R			mov [markerCol@io], di 
+ 0847  89 36 058E R			mov [markerRow@io], si 
+					 
+ 084B					game@start: 
+ 084B  C7 06 05D6 R 0000			mov [step@sel], 0 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-38
+
+
+				 
+ 0851						getSource@game: 
+ 0851  E8 06A2 R					call getData@io 
+				 
+ 0854  56						push si 
+ 0855  57						push di 
+ 0856  FF 06 05D6 R					inc [step@sel] 
+				 
+ 085A  BB 00C7 R					mov bx, offset board@en
+				gine 
+ 085D  53						push bx 
+ 085E  E8 0203 R					call getOffset@engine 
+ 0861  89 1E 0108 R					mov [sourceAddr@engine]
+				, bx 
+				 
+ 0865  E8 0213 R					call validateSource@eng
+				ine 
+ 0868  72 57						jc invalid@game 
+				 
+				 
+ 086A						getDest@game: 
+ 086A  E8 06A2 R					call getData@io 
+				 
+ 086D  56						push si 
+ 086E  57						push di 
+ 086F  FF 06 05D6 R					inc [step@sel] 
+				 
+ 0873  BB 00C7 R					mov bx, offset board@en
+				gine 
+ 0876  53						push bx 
+ 0877  E8 0203 R					call getOffset@engine 
+ 087A  89 1E 010A R					mov [destAddr@engine], 
+				bx 
+				 
+ 087E  E8 022E R					call validateDest@engin
+				e 
+ 0881  72 3E						jc invalid@game 
+				 
+ 0883  8B 36 0108 R				mov si, [sourceAddr@engine] 
+ 0887  8B 3E 010A R				mov di, [destAddr@engine] 
+				 
+ 088B  E8 0249 R				call validateMove@engine 
+ 088E  72 31					jc invalid@game 
+				 
+ 0890  80 3D 06					cmp byte ptr [di], 6 
+ 0893  74 44					je white_won@game 
+				 
+ 0895  80 3D FA					cmp byte ptr [di], -6 
+ 0898  74 45					je black_won@game 
+				 
+ 089A  E8 04EB R				call move@engine 
+				 
+ 089D  8B 0E 05D6 R				mov cx, [step@sel] 
+ 08A1						updateBoard@game: 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-39
+
+
+ 08A1  5F						pop di 
+ 08A2  5E						pop si 
+				 
+ 08A3  51						push cx 
+				 
+ 08A4  E8 012F R					call getColor@graphics 
+ 08A7  E8 002D R					call drawCube@graphics 
+				 
+ 08AA  59						pop cx 
+ 08AB  E2 F4						loop updateBoard@game 
+				 
+				 
+ 08AD						updateMark@game: 
+ 08AD  8B 3E 058C R					mov di, [markerCol@io] 
+ 08B1  8B 36 058E R					mov si, [markerRow@io] 
+				 
+ 08B5  A0 00C6 R					mov al, [markColor@grap
+				hics] 
+ 08B8  E8 00AE R					call markCube@graphics 
+						 
+ 08BB  F6 1E 0107 R				neg byte ptr [turn@engine] 
+ 08BF  EB 8A					jmp game@start 
+				 
+ 08C1						invalid@game: 
+ 08C1  03 26 05D6 R					add sp, [step@sel] 
+ 08C5  03 26 05D6 R					add sp, [step@sel] 
+				 
+ 08C9  8B 3E 058C R					mov di, [markerCol@io] 
+ 08CD  8B 36 058E R					mov si, [markerRow@io] 
+				 
+ 08D1  B0 0C						mov al, 0Ch 
+ 08D3  E8 00AE R					call markCube@graphics 
+				 
+ 08D6  E9 084B R					jmp game@start 
+				 
+ 08D9						white_won@game: 
+ 08D9  BA 05D8 R					mov dx, offset white@wi
+				n 
+ 08DC  EB 0A 90						jmp exit_msg 
+				 
+ 08DF						black_won@game: 
+ 08DF  BA 05EF R					mov dx, offset black@wi
+				n 
+ 08E2  EB 04 90						jmp exit_msg 
+				 
+ 08E5					EXIT: 
+ 08E5  BA 05AE R				mov dx, offset blank@error 
+				 
+ 08E8					exit_msg: 
+						; Flush io buffer 
+ 08E8  B4 0C					mov ah, 0Ch 
+ 08EA  CD 21					int 21h 
+				 
+						; Text Mode 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Page     1-40
+
+
+ 08EC  B8 0002					mov ax, 2h 
+ 08EF  CD 10					int 10h 
+				 
+						; Error Msg 
+ 08F1  B4 09					mov ah, 9h 
+ 08F3  CD 21					int 21h 
+				 
+						; Restore WD 
+ 08F5  B4 3B					mov ah, 3Bh 
+ 08F7  BA 05C3 R				mov dx, offset root@wd 
+ 08FA  CD 21					int 21h 
+				 
+						; Terminate Program 
+ 08FC  B8 4C00					mov ax, 4c00h 
+ 08FF  CD 21					int 21h 
+				 
+ 0901				code ends 
+				 
+				end START 
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0901	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0606	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ALPHACOLOR@LOOPX . . . . . . . .  	L NEAR	05B0	CODE
+
+BINDS@IO . . . . . . . . . . . .  	L NEAR	07D8	CODE
+BISHOP1@BISHOP . . . . . . . . .  	L NEAR	032B	CODE
+BISHOP2@BISHOP . . . . . . . . .  	L NEAR	0341	CODE
+BISHOP3@BISHOP . . . . . . . . .  	L NEAR	0357	CODE
+BISHOP4@BISHOP . . . . . . . . .  	L NEAR	036D	CODE
+BISHOP5@BISHOP . . . . . . . . .  	L NEAR	0383	CODE
+BISHOP@MOVES . . . . . . . . . .  	L NEAR	0329	CODE
+BLACK@PAWN . . . . . . . . . . .  	L NEAR	02AA	CODE
+BLACK@WIN  . . . . . . . . . . .  	L BYTE	05EF	DATA
+BLACKBISHOP@GRAPHICS . . . . . .  	L BYTE	0065	DATA
+BLACKCUBE@EVENROW  . . . . . . .  	L NEAR	0149	CODE
+BLACKCUBE@GRAPHICS . . . . . . .  	L BYTE	00C5	DATA
+BLACKCUBE@ODDROW . . . . . . . .  	L NEAR	0163	CODE
+BLACKKING@GRAPHICS . . . . . . .  	L BYTE	0086	DATA
+BLACKKNIGHT@GRAPHICS . . . . . .  	L BYTE	0059	DATA
+BLACKMOVE@VALIDATEDEST . . . . .  	L NEAR	023D	CODE
+BLACKMOVE@VALIDATESOURCE . . . .  	L NEAR	0222	CODE
+BLACKPAWN@GRAPHICS . . . . . . .  	L BYTE	004F	DATA
+BLACKPIECE@DRAWCUBE  . . . . . .  	L NEAR	0092	CODE
+BLACKQUEEN@GRAPHICS  . . . . . .  	L BYTE	007B	DATA
+BLACKROOK@GRAPHICS . . . . . . .  	L BYTE	0071	DATA
+BLACKTABLE@GRAPHICS  . . . . . .  	L WORD	0090	DATA
+BLACK_WON@GAME . . . . . . . . .  	L NEAR	08DF	CODE
+BLANK@ERROR  . . . . . . . . . .  	L BYTE	05AE	DATA
+BOARD@ENGINE . . . . . . . . . .  	L BYTE	00C7	DATA	Length = 0040
+BUFFER@IO  . . . . . . . . . . .  	L BYTE	058B	DATA
+BYUSER@ERROR . . . . . . . . . .  	L BYTE	0596	DATA
+
+CLEANBOARD . . . . . . . . . . .  	L NEAR	0180	CODE
+CLEANSCREEN@GRAPHICS . . . . . .  	N PROC	016A	CODE	Length = 0013
+CLOSEFILE@BMP  . . . . . . . . .  	N PROC	0524	CODE	Length = 000C
+CORDX@BMP  . . . . . . . . . . .  	L WORD	011E	DATA
+CORDY@BMP  . . . . . . . . . . .  	L WORD	0120	DATA
+CUBECOLOR@GRAPHICS . . . . . . .  	L BYTE	009E	DATA	Length = 001C
+CUBESIZE@GRAPHICS  . . . . . . .  	L WORD	00BE	DATA
+
+DECCOL@MARKERLEFT  . . . . . . .  	L NEAR	07A1	CODE
+DECROW@MARKERLEFT  . . . . . . .  	L NEAR	07B5	CODE
+DECROW@MARKERUP  . . . . . . . .  	L NEAR	0714	CODE
+DESTADDR@ENGINE  . . . . . . . .  	L WORD	010A	DATA
+DESTPOS@SEL  . . . . . . . . . .  	L DWORD	05D2	DATA
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Symbols-2
+
+
+DRAWBOARD@GRAPHICS . . . . . . .  	N PROC	0009	CODE	Length = 0024
+DRAWCUBE@GRAPHICS  . . . . . . .  	N PROC	002D	CODE	Length = 0081
+DRAWCUBE@PRINTBOARD  . . . . . .  	L NEAR	001D	CODE
+DRAWFILE@BMP . . . . . . . . . .  	N PROC	04F3	CODE	Length = 0025
+
+ERRORMSG@BMP . . . . . . . . . .  	L BYTE	0122	DATA
+EVENROW@GETCOLOR . . . . . . . .  	L NEAR	0135	CODE
+EXIT . . . . . . . . . . . . . .  	L NEAR	08E5	CODE
+EXIT@DRAWCUBE  . . . . . . . . .  	L NEAR	00AD	CODE
+EXIT@GETCOLOR  . . . . . . . . .  	L NEAR	0169	CODE
+EXIT@INITMOUSE . . . . . . . . .  	L NEAR	05F3	CODE
+EXIT@MARKERDOWN  . . . . . . . .  	L NEAR	074E	CODE
+EXIT@MARKERLEFT  . . . . . . . .  	L NEAR	07D5	CODE
+EXIT@MARKERRIGHT . . . . . . . .  	L NEAR	0791	CODE
+EXIT@MARKERUP  . . . . . . . . .  	L NEAR	0729	CODE
+EXIT_MSG . . . . . . . . . . . .  	L NEAR	08E8	CODE
+
+FILEERROR@ISFILEERROR  . . . . .  	L NEAR	05C0	CODE
+FILEHANDLE@BMP . . . . . . . . .  	L WORD	0153	DATA
+FILEHEIGHT@BMP . . . . . . . . .  	L WORD	011A	DATA
+FILEWIDTH@BMP  . . . . . . . . .  	L WORD	011C	DATA
+
+GAME@START . . . . . . . . . . .  	L NEAR	084B	CODE
+GETCOLOR@GRAPHICS  . . . . . . .  	N PROC	012F	CODE	Length = 003B
+GETDATA@IO . . . . . . . . . . .  	N PROC	06A2	CODE	Length = 005E
+GETDEST@GAME . . . . . . . . . .  	L NEAR	086A	CODE
+GETHANDLE@BMP  . . . . . . . . .  	N PROC	0518	CODE	Length = 000C
+GETOFFSET@ENGINE . . . . . . . .  	N PROC	0203	CODE	Length = 0010
+GETSOURCE@GAME . . . . . . . . .  	L NEAR	0851	CODE
+GOTODATA@BMP . . . . . . . . . .  	N PROC	0541	CODE	Length = 0024
+GOTOHEADER@BMP . . . . . . . . .  	N PROC	0530	CODE	Length = 0011
+
+HEADERBUFFER@BMP . . . . . . . .  	L BYTE	0555	DATA	Length = 0036
+
+INCCOL@MARKERRIGHT . . . . . . .  	L NEAR	075E	CODE
+INCROW@MARKERDOWN  . . . . . . .  	L NEAR	0739	CODE
+INCROW@MARKERRIGHT . . . . . . .  	L NEAR	0772	CODE
+INITBISHOPS  . . . . . . . . . .  	L NEAR	01D0	CODE
+INITBOARD@ENGINE . . . . . . . .  	N PROC	017D	CODE	Length = 0086
+INITGRAPH@GRAPHICS . . . . . . .  	N PROC	0000	CODE	Length = 0009
+INITKINGS  . . . . . . . . . . .  	L NEAR	01F4	CODE
+INITKNIGHTS  . . . . . . . . . .  	L NEAR	01BA	CODE
+INITMOUSE@IO . . . . . . . . . .  	N PROC	05D5	CODE	Length = 001F
+INITPAWNS  . . . . . . . . . . .  	L NEAR	0190	CODE
+INITQUEENS . . . . . . . . . . .  	L NEAR	01E6	CODE
+INITROOKS  . . . . . . . . . . .  	L NEAR	01A6	CODE
+INVALID@GAME . . . . . . . . . .  	L NEAR	08C1	CODE
+INVALID@MAPMOUSE . . . . . . . .  	L NEAR	0672	CODE
+INVALIDMOVE@VALIDATEDEST . . . .  	L NEAR	0245	CODE
+INVALIDMOVE@VALIDATEMOVE . . . .  	L NEAR	04DB	CODE
+INVALIDMOVE@VALIDATESOURCE . . .  	L NEAR	022A	CODE
+ISFILEERROR@BMP  . . . . . . . .  	N PROC	05BD	CODE	Length = 0018
+ISVALID@VALIDATEMOVE . . . . . .  	L NEAR	04C1	CODE
+
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Symbols-3
+
+
+KEY@GETDATA  . . . . . . . . . .  	L NEAR	06E5	CODE
+KING1@KING . . . . . . . . . . .  	L NEAR	048A	CODE
+KING2@KING . . . . . . . . . . .  	L NEAR	0491	CODE
+KING3@KING . . . . . . . . . . .  	L NEAR	0498	CODE
+KING4@KING . . . . . . . . . . .  	L NEAR	049D	CODE
+KING5@KING . . . . . . . . . . .  	L NEAR	04A2	CODE
+KING6@KING . . . . . . . . . . .  	L NEAR	04A9	CODE
+KING7@KING . . . . . . . . . . .  	L NEAR	04B0	CODE
+KING8@KING . . . . . . . . . . .  	L NEAR	04B7	CODE
+KING9@KING . . . . . . . . . . .  	L NEAR	04BE	CODE
+KING@MOVES . . . . . . . . . . .  	L NEAR	0488	CODE
+KNIGHT1@KNIGHT . . . . . . . . .  	L NEAR	02EE	CODE
+KNIGHT2@KNIGHT . . . . . . . . .  	L NEAR	02F5	CODE
+KNIGHT3@KNIGHT . . . . . . . . .  	L NEAR	02FC	CODE
+KNIGHT4@KNIGHT . . . . . . . . .  	L NEAR	0303	CODE
+KNIGHT5@KNIGHT . . . . . . . . .  	L NEAR	030A	CODE
+KNIGHT6@KNIGHT . . . . . . . . .  	L NEAR	0311	CODE
+KNIGHT7@KNIGHT . . . . . . . . .  	L NEAR	0318	CODE
+KNIGHT8@KNIGHT . . . . . . . . .  	L NEAR	031F	CODE
+KNIGHT9@KNIGHT . . . . . . . . .  	L NEAR	0326	CODE
+KNIGHT@MOVES . . . . . . . . . .  	L NEAR	02EC	CODE
+
+LOADBITMAP@BMP . . . . . . . . .  	N PROC	0565	CODE	Length = 0058
+LOOP1@MARKCUBE . . . . . . . . .  	L NEAR	00D8	CODE
+LOOP2@MARKCUBE . . . . . . . . .  	L NEAR	00F1	CODE
+LOOP3@MARKCUBE . . . . . . . . .  	L NEAR	0103	CODE
+LOOP4@MARKCUBE . . . . . . . . .  	L NEAR	011C	CODE
+LOOPMOVES@BISHOP1  . . . . . . .  	L NEAR	0330	CODE
+LOOPMOVES@BISHOP2  . . . . . . .  	L NEAR	0346	CODE
+LOOPMOVES@BISHOP3  . . . . . . .  	L NEAR	035C	CODE
+LOOPMOVES@BISHOP4  . . . . . . .  	L NEAR	0372	CODE
+LOOPMOVES@ISVALID  . . . . . . .  	L NEAR	04C6	CODE
+LOOPMOVES@QUEEN1 . . . . . . . .  	L NEAR	03E2	CODE
+LOOPMOVES@QUEEN2 . . . . . . . .  	L NEAR	03F8	CODE
+LOOPMOVES@QUEEN3 . . . . . . . .  	L NEAR	040E	CODE
+LOOPMOVES@QUEEN4 . . . . . . . .  	L NEAR	0424	CODE
+LOOPMOVES@QUEEN5 . . . . . . . .  	L NEAR	043A	CODE
+LOOPMOVES@QUEEN6 . . . . . . . .  	L NEAR	044F	CODE
+LOOPMOVES@QUEEN7 . . . . . . . .  	L NEAR	0464	CODE
+LOOPMOVES@QUEEN8 . . . . . . . .  	L NEAR	0477	CODE
+LOOPMOVES@ROOK1  . . . . . . . .  	L NEAR	038D	CODE
+LOOPMOVES@ROOK2  . . . . . . . .  	L NEAR	03A2	CODE
+LOOPMOVES@ROOK3  . . . . . . . .  	L NEAR	03B7	CODE
+LOOPMOVES@ROOK4  . . . . . . . .  	L NEAR	03CA	CODE
+LOOPX@CLEANBOARD . . . . . . . .  	L NEAR	016F	CODE
+LOOPX@DRAWCUBE . . . . . . . . .  	L NEAR	0055	CODE
+LOOPX@LOADBITMAP . . . . . . . .  	L NEAR	0593	CODE
+LOOPX@PRINTBOARD . . . . . . . .  	L NEAR	000D	CODE
+LOOPY@CLEANBOARD . . . . . . . .  	L NEAR	0172	CODE
+LOOPY@DRAWCUBE . . . . . . . . .  	L NEAR	0059	CODE
+LOOPY@LOADBITMAP . . . . . . . .  	L NEAR	057F	CODE
+LOOPY@PRINTBOARD . . . . . . . .  	L NEAR	0016	CODE
+
+MAPMOUSETOSQUARE@IO  . . . . . .  	N PROC	05F4	CODE	Length = 0080
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Symbols-4
+
+
+MARGINX@GRAPHICS . . . . . . . .  	L WORD	00C0	DATA
+MARGINY@GRAPHICS . . . . . . . .  	L WORD	00C2	DATA
+MARKCOLOR@GRAPHICS . . . . . . .  	L BYTE	00C6	DATA
+MARKCUBE@GRAPHICS  . . . . . . .  	N PROC	00AE	CODE	Length = 0081
+MARKERCOL@IO . . . . . . . . . .  	L WORD	058C	DATA
+MARKERDOWN@USERACTION  . . . . .  	L NEAR	072C	CODE
+MARKERLEFT@USERACTION  . . . . .  	L NEAR	0794	CODE
+MARKERRIGHT@USERACTION . . . . .  	L NEAR	0751	CODE
+MARKERROW@IO . . . . . . . . . .  	L WORD	058E	DATA
+MARKERUP@USERACTION  . . . . . .  	L NEAR	0707	CODE
+MOUSEENABLED@IO  . . . . . . . .  	L BYTE	0590	DATA
+MOUSEPREVLEFT@IO . . . . . . . .  	L BYTE	0591	DATA
+MOVE@ENGINE  . . . . . . . . . .  	N PROC	04EB	CODE	Length = 0008
+MOVES@VALIDATEMOVE . . . . . . .  	L NEAR	0261	CODE
+
+NOHOVER@GETDATA  . . . . . . . .  	L NEAR	06C4	CODE
+
+ODDROW@GETCOLOR  . . . . . . . .  	L NEAR	014F	CODE
+
+PAWN1@BLACK  . . . . . . . . . .  	L NEAR	02AA	CODE
+PAWN1@WHITE  . . . . . . . . . .  	L NEAR	0268	CODE
+PAWN2@BLACK  . . . . . . . . . .  	L NEAR	02B6	CODE
+PAWN2@WHITE  . . . . . . . . . .  	L NEAR	0274	CODE
+PAWN3@BLACK  . . . . . . . . . .  	L NEAR	02D1	CODE
+PAWN3@WHITE  . . . . . . . . . .  	L NEAR	028F	CODE
+PAWN4@BLACK  . . . . . . . . . .  	L NEAR	02DD	CODE
+PAWN4@WHITE  . . . . . . . . . .  	L NEAR	029B	CODE
+PAWN5@BLACK  . . . . . . . . . .  	L NEAR	02E9	CODE
+PAWN5@WHITE  . . . . . . . . . .  	L NEAR	02A7	CODE
+PAWN@MOVES . . . . . . . . . . .  	L NEAR	0261	CODE
+PIECES@WD  . . . . . . . . . . .  	L BYTE	05C7	DATA
+POLL@GETDATA . . . . . . . . . .  	L NEAR	06A2	CODE
+
+QUEEN1@QUEEN . . . . . . . . . .  	L NEAR	03DD	CODE
+QUEEN2@QUEEN . . . . . . . . . .  	L NEAR	03F3	CODE
+QUEEN3@QUEEN . . . . . . . . . .  	L NEAR	0409	CODE
+QUEEN4@QUEEN . . . . . . . . . .  	L NEAR	041F	CODE
+QUEEN5@QUEEN . . . . . . . . . .  	L NEAR	0435	CODE
+QUEEN6@QUEEN . . . . . . . . . .  	L NEAR	044A	CODE
+QUEEN7@QUEEN . . . . . . . . . .  	L NEAR	045F	CODE
+QUEEN8@QUEEN . . . . . . . . . .  	L NEAR	0472	CODE
+QUEEN9@QUEEN . . . . . . . . . .  	L NEAR	0485	CODE
+QUEEN@MOVES  . . . . . . . . . .  	L NEAR	03DB	CODE
+QUIT@USERACTION  . . . . . . . .  	L NEAR	0700	CODE
+
+RAWMOUSEX@IO . . . . . . . . . .  	L WORD	0592	DATA
+RAWMOUSEY@IO . . . . . . . . . .  	L WORD	0594	DATA
+REDRAW@UPDATEMARKER  . . . . . .  	L NEAR	0681	CODE
+RELEASED@GETDATA . . . . . . . .  	L NEAR	06DE	CODE
+ROOK1@ROOK . . . . . . . . . . .  	L NEAR	0388	CODE
+ROOK2@ROOK . . . . . . . . . . .  	L NEAR	039D	CODE
+ROOK3@ROOK . . . . . . . . . . .  	L NEAR	03B2	CODE
+ROOK4@ROOK . . . . . . . . . . .  	L NEAR	03C5	CODE
+ROOK5@ROOK . . . . . . . . . . .  	L NEAR	03D8	CODE
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Symbols-5
+
+
+ROOK@MOVES . . . . . . . . . . .  	L NEAR	0386	CODE
+ROOT@WD  . . . . . . . . . . . .  	L BYTE	05C3	DATA
+ROWBUFFER@BMP  . . . . . . . . .  	L BYTE	0155	DATA	Length = 0400
+
+SOURCEADDR@ENGINE  . . . . . . .  	L WORD	0108	DATA
+SOURCEPOS@SEL  . . . . . . . . .  	L DWORD	05CE	DATA
+START  . . . . . . . . . . . . .  	L NEAR	081A	CODE
+STEP@SEL . . . . . . . . . . . .  	L WORD	05D6	DATA
+SUBMIT@USERACTION  . . . . . . .  	L NEAR	0706	CODE
+SWITCHMOVES@VALIDATEMOVE . . . .  	L NEAR	0259	CODE
+SWITCHTABLE@ENGINE . . . . . . .  	L WORD	010C	DATA
+
+TURN@ENGINE  . . . . . . . . . .  	L BYTE	0107	DATA
+
+UNDEFINEDKEY@GETDATA . . . . . .  	L NEAR	06FE	CODE
+UPDATEBOARD@GAME . . . . . . . .  	L NEAR	08A1	CODE
+UPDATEMARK@GAME  . . . . . . . .  	L NEAR	08AD	CODE
+UPDATEMARKER@IO  . . . . . . . .  	N PROC	0674	CODE	Length = 002E
+USERACTION . . . . . . . . . . .  	N PROC	0700	CODE	Length = 00D8
+
+VALIDATEDEST@ENGINE  . . . . . .  	N PROC	022E	CODE	Length = 001B
+VALIDATEMOVE@ENGINE  . . . . . .  	N PROC	0249	CODE	Length = 02A2
+VALIDATESOURCE@ENGINE  . . . . .  	N PROC	0213	CODE	Length = 001B
+VALIDMOVE@ISVALID  . . . . . . .  	L NEAR	04D4	CODE
+VALIDMOVE@VALIDATEDEST . . . . .  	L NEAR	0247	CODE
+VALIDMOVE@VALIDATEMOVE . . . . .  	L NEAR	04E3	CODE
+VALIDMOVE@VALIDATESOURCE . . . .  	L NEAR	022C	CODE
+
+WHITE@PAWN . . . . . . . . . . .  	L NEAR	0268	CODE
+WHITE@WIN  . . . . . . . . . . .  	L BYTE	05D8	DATA
+WHITEBISHOP@GRAPHICS . . . . . .  	L BYTE	0016	DATA
+WHITECUBE@EVENROW  . . . . . . .  	L NEAR	0143	CODE
+WHITECUBE@GRAPHICS . . . . . . .  	L BYTE	00C4	DATA
+WHITECUBE@ODDROW . . . . . . . .  	L NEAR	015D	CODE
+WHITEKING@GRAPHICS . . . . . . .  	L BYTE	0037	DATA
+WHITEKNIGHT@GRAPHICS . . . . . .  	L BYTE	000A	DATA
+WHITEMOVE@VALIDATEDEST . . . . .  	L NEAR	0235	CODE
+WHITEMOVE@VALIDATESOURCE . . . .  	L NEAR	021A	CODE
+WHITEPAWN@GRAPHICS . . . . . . .  	L BYTE	0000	DATA
+WHITEPIECE@DRAWCUBE  . . . . . .  	L NEAR	00A0	CODE
+WHITEQUEEN@GRAPHICS  . . . . . .  	L BYTE	002C	DATA
+WHITEROOK@GRAPHICS . . . . . . .  	L BYTE	0022	DATA
+WHITETABLE@GRAPHICS  . . . . . .  	L WORD	0041	DATA
+WHITE_WON@GAME . . . . . . . . .  	L NEAR	08D9	CODE
+
+X@SCALED . . . . . . . . . . . .  	L NEAR	05FE	CODE
+
+Y2@SCALED  . . . . . . . . . . .  	L NEAR	065A	CODE
+Y@SCALED . . . . . . . . . . . .  	L NEAR	060A	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  game		
+
+Microsoft (R) Macro Assembler Version 5.00                  4/6/26 21:42:31
+                                                             Symbols-6
+
+
+
+   1832 Source  Lines
+   1836 Total   Lines
+    235 Symbols
+
+  50868 + 389884 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

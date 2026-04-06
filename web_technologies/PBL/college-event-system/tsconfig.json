@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    /* Allow JavaScript files to be compiled */
+    "allowJs": true,
+
+    /* Type checking options */
+    "noImplicitAny": true,          // Disallow variables with implicit 'any'
+    "noUnusedLocals": true,         // Warn on unused local variables
+    "noUnusedParameters": true,     // Warn on unused function parameters
+    "strictNullChecks": true,       // Enforce null/undefined checks
+
+    /* Path alias */
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    /* Performance & compatibility */
+    "skipLibCheck": true            // Skip type checking of declaration files
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
