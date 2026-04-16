@@ -1,0 +1,900 @@
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-1
+
+
+				 
+ 0000				stack segment para 'STACK' 
+ 0000  0040[				db 64 dup (' ') 
+	   20			
+			 ]	
+				
+ 0040				stack ends 
+				 
+ 0000				data segment para 'DATA' 
+				 
+ 0000  0137				win_w dw 137h                          
+				     ;window widht 
+ 0002  00C0				win_h dw 0C0h                          
+				     ;window height 
+ 0004  00				time db 0h                             
+				     ;saves time 
+					 
+ 0005  009D				plr_x dw 9dh 
+ 0007  0090				plr_y dw 90h 
+					 
+ 0009  0008				plr_sz dw 08h 
+ 000B  0008				plr_velo dw 08h 
+				 
+ 000D  0003				blt_sz dw 03h			
+									;bullet
+				 static properties 
+ 000F  0007				blt_spd dw 07h 
+ 0011  0010				max_bullets dw 10h 
+				 
+ 0013  0011[				blts_x dw 11h dup(0)		
+								;bullet variabl
+				e properties	 
+	   0000			
+			 ]	
+				
+ 0035  0011[				blts_y dw 11h dup(0) 
+	   0000			
+			 ]	
+				
+ 0057  0011[				blts_dir db 11h dup(0) 
+	   00			
+			 ]	
+				
+ 0068  000D				enm_sz dw 0dh 
+ 006A  0000				enm_x dw 0h 
+ 006C  0000				enm_y dw 0h 
+ 006E  00				enm_health db 0h 
+				 
+ 006F  47 61 6D 65 20 46 69		game_fin db 'Game Finished $' 
+       6E 69 73 68 65 64 20	
+       24			
+ 007E  50 72 65 73 73 20 61		startscreen db 'Press any Key to Start 
+				$' 
+       6E 79 20 4B 65 79 20	
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-2
+
+
+       74 6F 20 53 74 61 72	
+       74 20 24			
+				 
+ 0096				data ends 
+				 
+ 0000				code segment para 'CODE' 
+				 
+				 
+ 0000					main proc far 
+						 
+						assume CS:CODE,DS:DATA,SS:STACK
+				           ;makes int commands access DS 
+ 0000  1E					push DS 
+ 0001  B8 0000					mov AX, 0 
+ 0004  50					push AX 
+ 0005  B8 ---- R				mov AX, DATA 
+ 0008  8E D8					mov DS, AX 
+ 000A  58					pop AX 
+ 000B  58					pop AX 
+				 
+ 000C  B0 13					mov AL, 13h 
+ 000E  CD 10					int 10h 
+				 
+ 0010  B4 00					mov AH, 00h                    
+				           ;sets black bg color 
+ 0012  CD 10					int 10h 
+						 
+ 0014  E8 02D4 R				call clrscr 
+ 0017  E8 0065 R				call mk_enm 
+				 
+ 001A						starting_screen: 
+				 
+ 001A  B4 02					mov AH, 02h 
+ 001C  B7 00					mov BH, 00h 
+ 001E  B6 24					mov DH, 24h 
+ 0020  B2 02					mov DL, 02h 
+ 0022  CD 10					int 10h			
+									
+							;sets position to displ
+				ay text 
+				 
+ 0024  B4 09					mov AH, 09h 
+ 0026  8D 16 007E R				lea DX, startscreen	
+									
+					 
+ 002A  CD 21					int 21h			
+									
+							;displays text 
+				 
+ 002C						lss: 
+ 002C  B4 01					mov AH, 01h                    
+				                   ;checks if there is any inpu
+				t 
+ 002E  CD 16					int 16h 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-3
+
+
+ 0030  74 FA					jz lss 
+				 
+				 
+ 0032						time_loop: 
+ 0032  B4 2C						mov AH, 2ch            
+				                   ;get time 
+ 0034  CD 21						int 21h                
+				                   ;CH = hr, CL = min, DH = sec
+				, DL = msec 
+							 
+ 0036  3A 16 0004 R					cmp DL, time 
+ 003A  74 F6						je time_loop 
+						 
+ 003C  88 16 0004 R					mov time, DL           
+				                    ;update time 
+				 
+ 0040  80 3E 006E R 00					cmp enm_health, 00h 
+ 0045  75 03						jne dont_make_enm 
+ 0047  E8 0065 R					call mk_enm 
+				 
+ 004A							dont_make_enm: 
+							 
+ 004A  E8 01ED R					call check_shoot 
+ 004D  E8 0251 R					call mv_plr 
+ 0050  E8 0081 R					call mv_enm 
+ 0053  E8 0121 R					call mv_blts 
+ 0056  E8 02D4 R					call clrscr 
+ 0059  E8 02E5 R					call draw_plr 
+ 005C  E8 0314 R					call draw_blts 
+ 005F  E8 035A R					call draw_enm 
+				 
+ 0062  EB CE						jmp time_loop 
+				 
+ 0064  CB					ret 
+				 
+				 
+ 0065					main endp 
+				 
+				 
+ 0065					mk_enm proc near 
+				 
+				 
+ 0065						cont1: 
+ 0065  B4 2C						mov AH, 2ch            
+				                   ;get time 
+ 0067  CD 21						int 21h                
+				                   ;CH = hr, CL = min, DH = sec
+				, DL = msec 
+ 0069  B8 0000						mov AX, 0h 
+ 006C  8A C2						mov AL, DL 
+ 006E  B3 03						mov BL, 3h 
+ 0070  F6 E3						mul BL 
+ 0072  A3 006A R					mov enm_x, AX 
+ 0075  C7 06 006C R 0000				mov enm_y, 0h 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-4
+
+
+ 007B  C6 06 006E R 01					mov enm_health, 1h 
+						 
+ 0080						ret1: 
+ 0080  C3						ret 
+				 
+				 
+ 0081					mk_enm endp 
+				 
+				 
+ 0081					mv_enm proc near 
+				 
+ 0081  B9 0000					mov CX, 0h 
+				 
+ 0084						mv_hz: 
+ 0084  A1 006A R				mov AX, enm_x 
+ 0087  03 06 0068 R				add AX, enm_sz 
+ 008B  39 06 0005 R				cmp plr_x, AX 
+ 008F  77 11					ja mv_enm_r		
+					;move enm right 
+						 
+ 0091  A1 006A R				mov AX, enm_x 
+ 0094  2B 06 0009 R				sub AX, plr_sz 
+ 0098  3B 06 0005 R				cmp AX, plr_x 
+ 009C  77 0C					ja mv_enm_l		
+					;move enm left 
+ 009E  41					inc CX 
+ 009F  EB 11 90					jmp mv_vt 
+				 
+ 00A2						mv_enm_r: 
+				 
+ 00A2  83 06 006A R 02					add enm_x, 02h 
+ 00A7  EB 09 90						jmp mv_vt 
+				 
+ 00AA						mv_enm_l: 
+				 
+ 00AA  83 2E 006A R 02					sub enm_x, 02h 
+ 00AF  EB 01 90						jmp mv_vt 
+						 
+ 00B2						mv_vt: 
+						 
+ 00B2  A1 006C R				mov AX, enm_y 
+ 00B5  03 06 0068 R				add AX, enm_sz 
+ 00B9  39 06 0007 R				cmp plr_y, AX 
+ 00BD  77 11					ja mv_enm_d		
+					;move enm down 
+				 
+ 00BF  A1 006C R				mov AX, enm_y 
+ 00C2  2B 06 0009 R				sub AX, plr_sz 
+ 00C6  3B 06 0007 R				cmp AX, plr_y 
+ 00CA  77 0C					ja mv_enm_u		
+					;move enm up 
+ 00CC  41					inc CX 
+ 00CD  EB 11 90					jmp ret8 
+				 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-5
+
+
+ 00D0						mv_enm_d:	 
+				 
+ 00D0  83 06 006C R 02					add enm_y, 02h 
+ 00D5  EB 09 90						jmp ret8 
+				 
+ 00D8						mv_enm_u: 
+				 
+ 00D8  83 2E 006C R 02					sub enm_y, 02h 
+ 00DD  EB 01 90						jmp ret8 
+					 
+ 00E0						ret8: 
+				 
+ 00E0  83 F9 02					cmp CX, 2h 
+ 00E3  74 01					je crashed 
+ 00E5  C3					ret 
+				 
+ 00E6						crashed: 
+				 
+ 00E6  B4 02					mov AH, 02h 
+ 00E8  B7 00					mov BH, 00h 
+ 00EA  B6 24					mov DH, 24h 
+ 00EC  B2 06					mov DL, 06h 
+ 00EE  CD 10					int 10h			
+									
+							;sets position to displ
+				ay text 
+				 
+ 00F0  B4 09					mov AH, 09h 
+ 00F2  8D 16 006F R				lea DX, game_fin	
+									
+					 
+ 00F6  CD 21					int 21h			
+									
+							;displays text 
+				 
+ 00F8						lq: 
+ 00F8  B4 01					mov AH, 01h                    
+				                   ;checks if there is any inpu
+				t 
+ 00FA  CD 16					int 16h 
+ 00FC  74 FA					jz lq 
+				 
+ 00FE  E8 0102 R				call exit_game 
+ 0101  C3					ret 
+				 
+ 0102					mv_enm endp 
+				 
+				 
+ 0102					exit_game proc near 
+				 
+ 0102  B4 00					mov AH, 00h 
+ 0104  B0 02					mov AL, 02h 
+ 0106  CD 10					int 10h			
+									
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-6
+
+
+							;change to text mode  
+				 
+ 0108  B4 4C					mov AH, 4ch 
+ 010A  CD 21					int 21h			
+									
+							;exit 
+				 
+ 010C					exit_game endp 
+				 
+				 
+ 010C					free_blt_mem proc near 
+ 010C  3E: C6 86 0057 R 00			mov blts_dir[BP], 00h 
+ 0112  3E: C7 86 0013 R 0000			mov blts_x[BP], 00h 
+ 0119  3E: C7 86 0035 R 0000			mov blts_y[BP], 00h 
+ 0120  C3					ret 
+ 0121					free_blt_mem endp 
+				 
+				 
+ 0121					mv_blts proc near 
+				 
+ 0121  BD 0000					mov BP, 00h 
+				 
+ 0124						l2: 
+ 0124  3E: 80 BE 0057 R 00			cmp blts_dir[BP], 00h	
+						;next itr if blt dir == 0 
+ 012A  74 2D					je inc_loop2 
+				 
+ 012C  A1 0002 R				mov AX, win_h		
+							;check if blt is outsid
+				e screen 
+ 012F  3E: 83 BE 0035 R 07			cmp blts_y[BP], 7h 
+ 0135  7C D5					jl free_blt_mem 
+ 0137  3E: 39 86 0035 R				cmp blts_y[BP], AX 
+ 013C  7F CE					jg free_blt_mem 
+				 
+ 013E  A1 0000 R				mov AX, win_w 
+ 0141  3E: 83 BE 0013 R 07			cmp blts_x[BP], 7h 
+ 0147  7D 03					jnl abc 
+ 0149  E8 010C R				call free_blt_mem 
+				 
+ 014C						abc: 
+ 014C  3E: 39 86 0013 R				cmp blts_x[BP], AX 
+ 0151  7E 03					jng def 
+ 0153  E8 010C R				call free_blt_mem 
+				 
+ 0156						def: 
+ 0156  EB 09 90					jmp mv_blt 
+				 
+				 
+ 0159						inc_loop2: 
+ 0159  45						inc BP 
+ 015A  3B 2E 0011 R					cmp BP, max_bullets 
+ 015E  7E C4						jle l2 
+						 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-7
+
+
+ 0160  C3					ret 
+				 
+ 0161						mv_blt: 
+							 
+ 0161  80 3E 006E R 00					cmp enm_health, 0h 
+ 0166  74 39						je not_hit 
+				 
+							; check x-axis 
+ 0168  A1 006A R					mov AX, enm_x 
+ 016B  3E: 39 86 0013 R					cmp blts_x[BP], AX 
+ 0170  72 2F						jb not_hit 
+				 
+ 0172  A1 006A R					mov AX, enm_x 
+ 0175  03 06 0068 R					add AX, enm_sz 
+ 0179  3E: 39 86 0013 R					cmp blts_x[BP], AX 
+ 017E  77 21						ja not_hit 
+				 
+							; check y-axis 
+ 0180  A1 006C R					mov AX, enm_y 
+ 0183  3E: 39 86 0035 R					cmp blts_y[BP], AX 
+ 0188  72 17						jb not_hit 
+				 
+ 018A  A1 006C R					mov AX, enm_y 
+ 018D  03 06 0068 R					add AX, enm_sz 
+ 0191  3E: 39 86 0035 R					cmp blts_y[BP], AX 
+ 0196  77 09						ja not_hit 
+				 
+ 0198  E8 010C R					call free_blt_mem 
+ 019B  FE 0E 006E R					dec enm_health 
+ 019F  EB B8						jmp inc_loop2 
+				 
+				 
+ 01A1							not_hit: 
+				 
+ 01A1  3E: 80 BE 0057 R 01				cmp blts_dir[BP], 1h
+							;check direction of bul
+				let 
+ 01A7  74 1A						je blt_up 
+ 01A9  3E: 80 BE 0057 R 02				cmp blts_dir[BP], 2h 
+ 01AF  74 1C						je blt_dw 
+ 01B1  3E: 80 BE 0057 R 03				cmp blts_dir[BP], 3h 
+ 01B7  74 1E						je blt_lf 
+ 01B9  3E: 80 BE 0057 R 04				cmp blts_dir[BP], 4h 
+ 01BF  74 21						je blt_rg	 
+ 01C1  EB 96						jmp inc_loop2 
+				 
+ 01C3							blt_up:		
+									;mvs bu
+				llet 
+ 01C3  A1 000F R						mov AX, blt_spd
+					 
+ 01C6  3E: 29 86 0035 R						sub blts_y[BP],
+				 AX 
+ 01CB  EB 8C							jmp inc_loop2 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-8
+
+
+ 01CD							blt_dw: 
+ 01CD  A1 000F R						mov AX, blt_spd
+				 
+ 01D0  3E: 01 86 0035 R						add blts_y[BP],
+				 AX 
+ 01D5  EB 82							jmp inc_loop2 
+ 01D7							blt_lf: 
+ 01D7  A1 000F R						mov AX, blt_spd
+				 
+ 01DA  3E: 29 86 0013 R						sub blts_x[BP],
+				 AX 
+ 01DF  E9 0159 R						jmp inc_loop2 
+ 01E2							blt_rg: 
+ 01E2  A1 000F R						mov AX, blt_spd
+				 
+ 01E5  3E: 01 86 0013 R						add blts_x[BP],
+				 AX 
+ 01EA  E9 0159 R						jmp inc_loop2 
+				 
+				 
+ 01ED					mv_blts endp 
+				 
+				 
+ 01ED					check_shoot proc near 
+				 
+ 01ED  B4 01					mov AH, 01h                    
+				                   ;checks if there is any inpu
+				t 
+ 01EF  CD 16					int 16h 
+ 01F1  75 01					jnz cont10 
+ 01F3  C3					ret 
+				 
+ 01F4						cont10: 
+ 01F4  B4 00					mov AH, 00h                    
+				                   ;reads the input 
+ 01F6  CD 16					int 16h 
+				 
+				 
+ 01F8  BD 0010					mov BP, 10h 
+ 01FB						l3: 
+ 01FB  3E: 83 BE 0013 R 00			cmp blts_x[BP], 00h 
+ 0201  74 08					je cont3 
+ 0203  83 FD 00					cmp BP, 00h 
+ 0206  74 48					je ret3 
+ 0208  4D					dec BP 
+ 0209  75 F0					jnz l3 
+				 
+ 020B						cont3: 
+ 020B  3C 69					cmp AL, 69h                    
+				                  ;if i is pressed -> blt dir u
+				p 
+ 020D  74 0D					je i_pressed 
+ 020F  3C 6B					cmp AL, 6Bh                    
+				                  ;if k is pressed -> blt dir d
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-9
+
+
+				own 
+ 0211  74 12					je k_pressed 
+ 0213  3C 6A					cmp AL, 6Ah                    
+				                  ;if j is pressed -> blt dir l
+				eft 
+ 0215  74 17					je j_pressed 
+ 0217  3C 6C					cmp AL, 6Ch                    
+				                  ;if l is pressed -> blt dir r
+				ight 
+ 0219  74 1C					je l_pressed 
+ 021B  C3					ret 
+						 
+ 021C						i_pressed: 
+ 021C  3E: C6 86 0057 R 01				mov blts_dir[BP], 1h 
+ 0222  EB 1C 90						jmp end3 
+				 
+ 0225						k_pressed: 
+ 0225  3E: C6 86 0057 R 02				mov blts_dir[BP], 2h 
+ 022B  EB 13 90						jmp end3 
+				 
+ 022E						j_pressed: 
+ 022E  3E: C6 86 0057 R 03				mov blts_dir[BP], 3h 
+ 0234  EB 0A 90						jmp end3 
+				 
+ 0237						l_pressed: 
+ 0237  3E: C6 86 0057 R 04				mov blts_dir[BP], 4h 
+ 023D  EB 01 90						jmp end3 
+					 
+ 0240						end3: 
+ 0240  A1 0005 R					mov AX, plr_x 
+ 0243  3E: 89 86 0013 R					mov blts_x[BP], AX 
+ 0248  A1 0007 R					mov AX, plr_y 
+ 024B  3E: 89 86 0035 R					mov blts_y[BP], AX 
+ 0250						ret3: 
+ 0250  C3					ret 
+				 
+ 0251					check_shoot endp 
+				 
+				 
+ 0251					mv_plr proc near 
+					 
+ 0251  B4 01					mov AH, 01h                    
+				                   ;checks if there is any inpu
+				t 
+ 0253  CD 16					int 16h 
+ 0255  75 01					jnz cont4 
+ 0257  C3					ret 
+				 
+ 0258						cont4: 
+ 0258  B4 00					mov AH, 00h                    
+				                   ;reads the input 
+ 025A  CD 16					int 16h 
+				 
+ 025C  3C 77					cmp AL, 77h   ; w 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-10
+
+
+ 025E  74 21					je w_pressed 
+ 0260  3C 57					cmp AL, 57h   ; W 
+ 0262  74 1D					je w_pressed 
+				 
+ 0264  3C 73					cmp AL, 73h   ; s 
+ 0266  74 2A					je s_pressed 
+ 0268  3C 53					cmp AL, 53h   ; S 
+ 026A  74 26					je s_pressed 
+				 
+ 026C  3C 61					cmp AL, 61h   ; a 
+ 026E  74 3A					je a_pressed 
+ 0270  3C 41					cmp AL, 41h   ; A 
+ 0272  74 36					je a_pressed 
+				 
+ 0274  3C 64					cmp AL, 64h   ; d 
+ 0276  74 43					je d_pressed 
+ 0278  3C 44					cmp AL, 44h   ; D 
+ 027A  74 3F					je d_pressed 
+ 027C  74 3D					je d_pressed 
+ 027E  EB 53 90					jmp end4 
+				 
+						 
+ 0281						w_pressed: 
+ 0281  83 3E 0007 R 10					cmp plr_y, 10h         
+				                         ;checks if plr_y < 05h
+				 
+ 0286  72 4B						jc end4 
+				 
+ 0288  A1 000B R					mov AX, plr_velo       
+				                       ;mvs plr_y by plr_velo_y
+				 
+ 028B  29 06 0007 R					sub plr_y, AX 
+ 028F  EB 42 90						jmp end4 
+				 
+ 0292						s_pressed: 
+ 0292  8B 1E 0002 R					mov BX, win_h          
+				                         ;checks if plr_y > win
+				_h 
+ 0296  2B 1E 0009 R					sub BX, plr_sz 
+ 029A  3B 1E 0007 R					cmp BX, plr_y 
+ 029E  72 33						jc end4 
+				 
+ 02A0  A1 000B R					mov AX, plr_velo       
+				                       ;mvs plr_x by plr_velo_x
+				 
+ 02A3  01 06 0007 R					add plr_y, AX 
+ 02A7  EB 2A 90						jmp end4 
+				 
+ 02AA						a_pressed: 
+ 02AA  83 3E 0005 R 10					cmp plr_x, 10h         
+				                         ;checks if plr_y < 05h
+				 
+ 02AF  72 22						jc end4 
+ 02B1  A1 000B R					mov AX, plr_velo       
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-11
+
+
+				                       ;mvs plr_x by plr_velo_x
+				 
+ 02B4  29 06 0005 R					sub plr_x, AX 
+ 02B8  EB 19 90						jmp end4 
+				 
+ 02BB						d_pressed: 
+ 02BB  8B 1E 0000 R					mov BX, win_w          
+				                         ;checks if plr_x > win
+				_w 
+ 02BF  2B 1E 0009 R					sub BX, plr_sz 
+ 02C3  3B 1E 0005 R					cmp BX, plr_x 
+ 02C7  72 0A						jc end4 
+						 
+ 02C9  A1 000B R					mov AX, plr_velo       
+				                       ;mvs plr_x by plr_velo_x
+				 
+ 02CC  01 06 0005 R					add plr_x, AX 
+ 02D0  EB 01 90						jmp end4	 
+				 
+ 02D3						end4: 
+ 02D3  C3						ret 
+				 
+ 02D4					mv_plr endp 
+				 
+				 
+ 02D4					clrscr proc near    ;clear screen 
+				 
+ 02D4  B8 A000					mov AX, 0A000h   ; video memory
+				 segment is 0A000h 
+ 02D7  8E C0					mov ES, AX 
+ 02D9  BF 0000					mov DI, 0       ; ES:0 is the s
+				tart of the framebuffer 
+ 02DC  B9 7D00					mov CX, 07D00h   ; Store the to
+				tal number of bytes required for mode 0Dh (320x
+				200 at 16 colors) 
+ 02DF  B8 0000					mov AX, 0h 
+ 02E2  F3/ AB					rep stosw       ; zero CX * 2 b
+				ytes at ES:DI 
+				 
+ 02E4  C3					ret 
+				 
+ 02E5					clrscr endp 
+					 
+				 
+ 02E5					draw_plr proc near 
+ 02E5  8B 0E 0005 R				mov CX, plr_x 
+ 02E9  8B 16 0007 R				mov DX, plr_y  
+				 
+ 02ED						draw_plr_hz: 
+				 
+ 02ED  B4 0C						mov AH, 0ch 
+ 02EF  B0 03						mov AL, 03h            
+				                 ;color blue 
+ 02F1  B7 00						mov BH, 00h 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-12
+
+
+ 02F3  CD 10						int 10h 
+				 
+ 02F5  41						inc CX 
+ 02F6  8B C1						mov AX, CX  
+ 02F8  2B 06 0005 R					sub AX, plr_x 
+ 02FC  3B 06 0009 R					cmp AX, plr_sz 
+ 0300  7E EB						jng draw_plr_hz        
+				         ;makes one row 
+							 
+ 0302  8B 0E 0005 R				mov CX, plr_x 
+ 0306  42					inc DX 
+				 
+ 0307  8B C2					mov AX, DX 
+ 0309  2B 06 0007 R				sub AX, plr_y 
+ 030D  3B 06 0009 R				cmp AX, plr_sz 
+ 0311  7E DA					jng draw_plr_hz                
+				 ;makes the columns 
+							 
+ 0313  C3					ret 
+ 0314					draw_plr endp 
+				 
+				 
+ 0314					draw_blts proc near 
+ 0314  BD 0000					mov BP, 00h 
+				 
+ 0317						l5: 
+ 0317  3E: 80 BE 0057 R 00			cmp blts_dir[BP], 00h	
+							;next iteration if dir 
+				== 0 
+ 031D  74 33					je inc_loop5 
+						 
+				 
+ 031F  3E: 8B 8E 0013 R				mov CX, blts_x[BP] 
+ 0324  3E: 8B 96 0035 R				mov DX, blts_y[BP] 
+				 
+ 0329						draw_blt_hz: 
+				 
+ 0329  B4 0C						mov AH, 0ch 
+ 032B  B0 04						mov AL, 04h	
+									;color 
+				red 
+ 032D  B7 00						mov BH, 00h 
+ 032F  CD 10						int 10h 
+				 
+ 0331  41						inc CX 
+ 0332  8B C1						mov AX, CX 
+ 0334  3E: 2B 86 0013 R					sub AX, blts_x[BP] 
+ 0339  3B 06 000D R					cmp AX, blt_sz 
+ 033D  7E EA						jng draw_blt_hz        
+				         ;makes one row 
+							 
+ 033F  3E: 8B 8E 0013 R				mov CX, blts_x[BP] 
+ 0344  42					inc DX 
+				 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-13
+
+
+ 0345  8B C2					mov AX, DX 
+ 0347  3E: 2B 86 0035 R				sub AX, blts_y[BP] 
+ 034C  3B 06 000D R				cmp AX, blt_sz 
+ 0350  7E D7					jng draw_blt_hz                
+				 ;makes the columns 
+				 
+				 
+ 0352						inc_loop5: 
+ 0352  45					inc BP 
+ 0353  3B 2E 0011 R				cmp BP, max_bullets 
+ 0357  7E BE					jle l5 
+				 
+ 0359						end5: 
+ 0359  C3					ret 
+ 035A					draw_blts endp 
+				 
+				 
+ 035A					draw_enm proc near 
+ 035A  BD 0000					mov BP, 00h 
+				 
+ 035D						l6: 
+ 035D  80 3E 006E R 00				cmp enm_health, 00h	
+							;next iteration if dir 
+				== 0 
+ 0362  74 2F					je ret6 
+				 
+ 0364  8B 0E 006A R				mov CX, enm_x 
+ 0368  8B 16 006C R				mov DX, enm_y 
+				 
+ 036C						draw_enm_hz: 
+				 
+ 036C  B8 0007						mov AX, 7h	
+									;color 
+				acc to BP 
+ 036F  B4 0C						mov AH, 0ch 
+ 0371  B7 00						mov BH, 00h 
+ 0373  CD 10						int 10h		
+									;draw a
+				 pixel 
+				 
+ 0375  41						inc CX 
+ 0376  8B C1						mov AX, CX 
+ 0378  2B 06 006A R					sub AX, enm_x 
+ 037C  3B 06 0068 R					cmp AX, enm_sz 
+ 0380  7E EA						jng draw_enm_hz        
+				         ;makes one row 
+				 
+ 0382  8B 0E 006A R				mov CX, enm_x 
+ 0386  42					inc DX 
+				 
+ 0387  8B C2					mov AX, DX 
+ 0389  2B 06 006C R				sub AX, enm_y 
+ 038D  3B 06 0068 R				cmp AX, enm_sz 
+ 0391  7E D9					jng draw_enm_hz                
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Page     1-14
+
+
+				 ;makes the columns 
+				 
+ 0393						ret6: 
+ 0393  C3					ret 
+				 
+ 0394					draw_enm endp 
+				 
+				 
+ 0394				code ends 
+				end 
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0394	PARA	NONE	'CODE'
+DATA . . . . . . . . . . . . . .  	0096	PARA	NONE	'DATA'
+STACK  . . . . . . . . . . . . .  	0040	PARA	NONE	'STACK'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ABC  . . . . . . . . . . . . . .  	L NEAR	014C	CODE
+A_PRESSED  . . . . . . . . . . .  	L NEAR	02AA	CODE
+
+BLTS_DIR . . . . . . . . . . . .  	L BYTE	0057	DATA	Length = 0011
+BLTS_X . . . . . . . . . . . . .  	L WORD	0013	DATA	Length = 0011
+BLTS_Y . . . . . . . . . . . . .  	L WORD	0035	DATA	Length = 0011
+BLT_DW . . . . . . . . . . . . .  	L NEAR	01CD	CODE
+BLT_LF . . . . . . . . . . . . .  	L NEAR	01D7	CODE
+BLT_RG . . . . . . . . . . . . .  	L NEAR	01E2	CODE
+BLT_SPD  . . . . . . . . . . . .  	L WORD	000F	DATA
+BLT_SZ . . . . . . . . . . . . .  	L WORD	000D	DATA
+BLT_UP . . . . . . . . . . . . .  	L NEAR	01C3	CODE
+
+CHECK_SHOOT  . . . . . . . . . .  	N PROC	01ED	CODE	Length = 0064
+CLRSCR . . . . . . . . . . . . .  	N PROC	02D4	CODE	Length = 0011
+CONT1  . . . . . . . . . . . . .  	L NEAR	0065	CODE
+CONT10 . . . . . . . . . . . . .  	L NEAR	01F4	CODE
+CONT3  . . . . . . . . . . . . .  	L NEAR	020B	CODE
+CONT4  . . . . . . . . . . . . .  	L NEAR	0258	CODE
+CRASHED  . . . . . . . . . . . .  	L NEAR	00E6	CODE
+
+DEF  . . . . . . . . . . . . . .  	L NEAR	0156	CODE
+DONT_MAKE_ENM  . . . . . . . . .  	L NEAR	004A	CODE
+DRAW_BLTS  . . . . . . . . . . .  	N PROC	0314	CODE	Length = 0046
+DRAW_BLT_HZ  . . . . . . . . . .  	L NEAR	0329	CODE
+DRAW_ENM . . . . . . . . . . . .  	N PROC	035A	CODE	Length = 003A
+DRAW_ENM_HZ  . . . . . . . . . .  	L NEAR	036C	CODE
+DRAW_PLR . . . . . . . . . . . .  	N PROC	02E5	CODE	Length = 002F
+DRAW_PLR_HZ  . . . . . . . . . .  	L NEAR	02ED	CODE
+D_PRESSED  . . . . . . . . . . .  	L NEAR	02BB	CODE
+
+END3 . . . . . . . . . . . . . .  	L NEAR	0240	CODE
+END4 . . . . . . . . . . . . . .  	L NEAR	02D3	CODE
+END5 . . . . . . . . . . . . . .  	L NEAR	0359	CODE
+ENM_HEALTH . . . . . . . . . . .  	L BYTE	006E	DATA
+ENM_SZ . . . . . . . . . . . . .  	L WORD	0068	DATA
+ENM_X  . . . . . . . . . . . . .  	L WORD	006A	DATA
+ENM_Y  . . . . . . . . . . . . .  	L WORD	006C	DATA
+EXIT_GAME  . . . . . . . . . . .  	N PROC	0102	CODE	Length = 000A
+
+FREE_BLT_MEM . . . . . . . . . .  	N PROC	010C	CODE	Length = 0015
+
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Symbols-2
+
+
+GAME_FIN . . . . . . . . . . . .  	L BYTE	006F	DATA
+
+INC_LOOP2  . . . . . . . . . . .  	L NEAR	0159	CODE
+INC_LOOP5  . . . . . . . . . . .  	L NEAR	0352	CODE
+I_PRESSED  . . . . . . . . . . .  	L NEAR	021C	CODE
+
+J_PRESSED  . . . . . . . . . . .  	L NEAR	022E	CODE
+
+K_PRESSED  . . . . . . . . . . .  	L NEAR	0225	CODE
+
+L2 . . . . . . . . . . . . . . .  	L NEAR	0124	CODE
+L3 . . . . . . . . . . . . . . .  	L NEAR	01FB	CODE
+L5 . . . . . . . . . . . . . . .  	L NEAR	0317	CODE
+L6 . . . . . . . . . . . . . . .  	L NEAR	035D	CODE
+LQ . . . . . . . . . . . . . . .  	L NEAR	00F8	CODE
+LSS  . . . . . . . . . . . . . .  	L NEAR	002C	CODE
+L_PRESSED  . . . . . . . . . . .  	L NEAR	0237	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0065
+MAX_BULLETS  . . . . . . . . . .  	L WORD	0011	DATA
+MK_ENM . . . . . . . . . . . . .  	N PROC	0065	CODE	Length = 001C
+MV_BLT . . . . . . . . . . . . .  	L NEAR	0161	CODE
+MV_BLTS  . . . . . . . . . . . .  	N PROC	0121	CODE	Length = 00CC
+MV_ENM . . . . . . . . . . . . .  	N PROC	0081	CODE	Length = 0081
+MV_ENM_D . . . . . . . . . . . .  	L NEAR	00D0	CODE
+MV_ENM_L . . . . . . . . . . . .  	L NEAR	00AA	CODE
+MV_ENM_R . . . . . . . . . . . .  	L NEAR	00A2	CODE
+MV_ENM_U . . . . . . . . . . . .  	L NEAR	00D8	CODE
+MV_HZ  . . . . . . . . . . . . .  	L NEAR	0084	CODE
+MV_PLR . . . . . . . . . . . . .  	N PROC	0251	CODE	Length = 0083
+MV_VT  . . . . . . . . . . . . .  	L NEAR	00B2	CODE
+
+NOT_HIT  . . . . . . . . . . . .  	L NEAR	01A1	CODE
+
+PLR_SZ . . . . . . . . . . . . .  	L WORD	0009	DATA
+PLR_VELO . . . . . . . . . . . .  	L WORD	000B	DATA
+PLR_X  . . . . . . . . . . . . .  	L WORD	0005	DATA
+PLR_Y  . . . . . . . . . . . . .  	L WORD	0007	DATA
+
+RET1 . . . . . . . . . . . . . .  	L NEAR	0080	CODE
+RET3 . . . . . . . . . . . . . .  	L NEAR	0250	CODE
+RET6 . . . . . . . . . . . . . .  	L NEAR	0393	CODE
+RET8 . . . . . . . . . . . . . .  	L NEAR	00E0	CODE
+
+STARTING_SCREEN  . . . . . . . .  	L NEAR	001A	CODE
+STARTSCREEN  . . . . . . . . . .  	L BYTE	007E	DATA
+S_PRESSED  . . . . . . . . . . .  	L NEAR	0292	CODE
+
+TIME . . . . . . . . . . . . . .  	L BYTE	0004	DATA
+TIME_LOOP  . . . . . . . . . . .  	L NEAR	0032	CODE
+
+WIN_H  . . . . . . . . . . . . .  	L WORD	0002	DATA
+WIN_W  . . . . . . . . . . . . .  	L WORD	0000	DATA
+W_PRESSED  . . . . . . . . . . .  	L NEAR	0281	CODE
+Microsoft (R) Macro Assembler Version 5.00                  4/7/26 19:03:37
+                                                             Symbols-3
+
+
+
+@FILENAME  . . . . . . . . . . .  	TEXT  shooting		
+
+
+    585 Source  Lines
+    585 Total   Lines
+     84 Symbols
+
+  51072 + 449088 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

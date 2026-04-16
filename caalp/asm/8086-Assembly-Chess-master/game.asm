@@ -29,6 +29,8 @@ step@sel		dw	0
 white@win		db 'Game ended. White won!$'
 black@win		db 'Game ended. Black won!$'
 
+
+
 data ends
 
 code segment
@@ -97,13 +99,24 @@ START:
 		call validateMove@engine
 		jc invalid@game
 
-		cmp byte ptr [di], 6
-		je white_won@game
-
-		cmp byte ptr [di], -6
-		je black_won@game
-
 		call move@engine
+
+		; switch turn FIRST
+		neg byte ptr [turn@engine]
+
+		; now check opponent king
+		call isKingInCheck
+		jnc continue_game
+
+		call hasAnyLegalMove
+		jc continue_game
+
+		; CHECKMATE
+		cmp byte ptr [turn@engine], 1
+		je white_won@game
+		jmp black_won@game
+
+		continue_game:; 🚨 THIS LINE IS CRITICAL
 
 		mov cx, [step@sel]
 		updateBoard@game:

@@ -3,7 +3,7 @@ package com.satellite;
 import java.util.*;
 
 /**
- * Dijkstra's algorithm — faithful to mam's Java implementation.
+ * Dijkstra's algorithm — Java implementation.
  *
  * The core logic (select[], distance[], pred[], min-distance loop,
  * relaxation loop) is identical to the reference code.

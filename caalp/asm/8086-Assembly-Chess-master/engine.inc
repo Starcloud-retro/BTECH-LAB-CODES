@@ -1,6 +1,7 @@
 data segment
 
 board@engine		db	64 dup(0)
+backupBoard db 64 dup(?)
 turn@engine			db	-1d
 
 sourceAddr@engine	dw	0
@@ -770,7 +771,184 @@ move@engine PROC
 	mov byte ptr [si], 0
 
 	ret
-move@engine ENDP
+	move@engine ENDP
+
+
+	; ===============================
+	; CHECKMATE SUPPORT (NEW)
+	; ===============================
+
+	hasAnyLegalMove PROC
+	push ax bx cx dx si di
+
+	mov bx, offset board@engine
+	mov cx, 64
+
+	outer_loop:
+	mov al, [bx]
+
+	cmp al, 0
+	je next_piece
+
+	mov dl, [turn@engine]
+	imul dl
+	jl next_piece
+
+	mov si, offset board@engine
+	mov dx, 64
+
+	inner_loop:
+
+	; backup board
+	push si di cx
+	mov si, offset board@engine
+	mov di, offset backupBoard
+	mov cx, 64
+	rep movsb
+	pop cx di si
+
+	mov [sourceAddr@engine], bx
+	mov [destAddr@engine], si
+
+	call validateMove@engine
+	jc restore_board
+
+	call move@engine
+
+	call isKingInCheck
+	jc restore_board
+
+	; ✅ valid move found
+	stc
+	jmp done
+
+	restore_board:
+	push si di cx
+	mov si, offset backupBoard
+	mov di, offset board@engine
+	mov cx, 64
+	rep movsb
+	pop cx di si
+
+	inc si
+	dec dx
+	jnz inner_loop
+
+	next_piece:
+	inc bx
+	loop outer_loop
+
+	clc
+
+	done:
+	pop di si dx cx bx ax
+	ret
+	hasAnyLegalMove ENDP
+
+
+	; ============================
+	; CHECK DETECTION (NEW)
+	; ============================
+
+	isKingInCheck PROC
+	push ax bx cx dx si di
+
+	call findKing
+
+	mov bx, offset board@engine
+	mov cx, 64
+
+	check_loop:
+	mov al, [bx]
+
+	cmp al, 0
+	je next_piece
+
+	mov dl, [turn@engine]
+	imul dl
+	jg next_piece
+
+	push bx
+	push si
+	call canAttackSquare
+	jc king_in_check
+
+	pop si
+	pop bx
+
+	next_piece:
+	inc bx
+	loop check_loop
+
+	clc
+	jmp done
+
+	king_in_check:
+	stc
+
+	done:
+	pop di si dx cx bx ax
+	ret
+	isKingInCheck ENDP
+
+	findKing PROC
+	; Output: SI = king position
+
+	push ax bx cx
+
+	mov bx, offset board@engine
+	mov cx, 64
+
+	find_loop:
+	mov al, [bx]
+
+	cmp al, 6
+	je white_king
+
+	cmp al, -6
+	je black_king
+
+	next:
+	inc bx
+	loop find_loop
+
+	white_king:
+	mov si, bx
+	jmp done
+
+	black_king:
+	mov si, bx
+
+	done:
+	pop cx bx ax
+	ret
+	findKing ENDP
+
+	canAttackSquare PROC
+	; BX = attacker
+	; SI = target (king)
+
+	push ax dx si di
+
+	mov [sourceAddr@engine], bx
+	mov [destAddr@engine], si
+
+	mov si, bx
+	mov di, si
+
+	call validateMove@engine
+	jc not_attack
+
+	stc
+	jmp done
+
+	not_attack:
+	clc
+
+	done:
+	pop di si dx ax
+	ret
+	canAttackSquare ENDP
 
 code ends
 
